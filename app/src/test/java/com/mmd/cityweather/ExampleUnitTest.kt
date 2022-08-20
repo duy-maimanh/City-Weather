@@ -1,4 +1,4 @@
-package com.mmd.citywheather
+package com.mmd.cityweather
 
 import org.junit.Test
 
