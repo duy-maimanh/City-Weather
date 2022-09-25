@@ -2,8 +2,6 @@ package com.mmd.cityweather.common
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.ui.AppBarConfiguration
-import com.google.android.material.snackbar.Snackbar
 import com.mmd.cityweather.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 
