@@ -1,12 +1,12 @@
-package com.mmd.cityweather.common.data.cache.model.cacheweather
+package com.mmd.cityweather.common.data.database.model.cacheweather
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "weathers")
+@Entity(tableName = "cached_weathers")
 class CachedWeather(
     @PrimaryKey(autoGenerate = true)
-    var weatherId: Int = 0,
+    var id: Int = 0,
     var mainStatus: String,
     var description: String,
     var temp: Float,

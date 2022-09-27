@@ -1,32 +1,30 @@
-package com.mmd.cityweather.common.data.cache.model.cachedlocation
+package com.mmd.cityweather.common.data.database.model.cachedcities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.mmd.cityweather.common.data.cache.model.cacheweather.CachedWeather
-import com.mmd.cityweather.common.domain.model.Location
-
+import com.mmd.cityweather.common.data.database.model.cacheweather.CachedWeather
+import java.util.*
 
 @Entity(
-    tableName = "locations",
+    tableName = "cached_cities",
     foreignKeys = [
         ForeignKey(
             entity = CachedWeather::class,
-            parentColumns = ["weatherId"],
-            childColumns = ["weatherId"],
+            parentColumns = ["id"],
+            childColumns = ["id"],
             onDelete = CASCADE
         )
     ],
-    indices = [Index("weatherId")]
+    indices = [Index("id")]
 )
-data class CachedLocation(
+data class CachedCities(
     @PrimaryKey(autoGenerate = true)
-    var locationId: Int = 0,
-    val weatherId: Int,
-    val cityName: String,
-    val language: String
+    var id: Int = 0,
+    val cityId: Int,
+    val dateAdd: Date
 ) {
     companion object {
 //        fun fromDomain(domainModel: Location): CachedLocation {
