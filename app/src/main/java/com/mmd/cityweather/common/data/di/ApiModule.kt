@@ -8,7 +8,9 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -20,15 +22,32 @@ class ApiModule {
 
     @Provides
     @Singleton
-    fun provideApi(okHttpClient: OkHttpClient): CityWeatherApi {
-        return Retrofit.Builder().baseUrl(ApiConstants.BASE_ENDPOINT).client(okHttpClient)
-            .addConverterFactory(MoshiConverterFactory.create()).build()
-            .create(CityWeatherApi::class.java)
+    fun provideApi(builder: Retrofit.Builder): CityWeatherApi {
+        return builder.build().create(CityWeatherApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit.Builder {
+        return Retrofit.Builder().baseUrl(ApiConstants.BASE_ENDPOINT)
+            .client(okHttpClient)
+            .addConverterFactory(MoshiConverterFactory.create())
     }
 
     @Provides
     fun provideOkHttpClient(httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
-        return OkHttpClient.Builder().addInterceptor(httpLoggingInterceptor).cache(null).build()
+        return OkHttpClient.Builder()
+            .addInterceptor(httpLoggingInterceptor)
+            .addInterceptor(Interceptor { chain ->
+                // add Api id for every request
+                var request = chain.request()
+                val url = request.url.newBuilder()
+                    .addQueryParameter("appid", ApiConstants.API_KEY)
+                    .build()
+                request = request.newBuilder().url(url).build()
+                chain.proceed(request)
+            })
+            .cache(null).build()
     }
 
     @Provides
