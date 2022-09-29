@@ -1,0 +1,43 @@
+{
+  "coord": {
+    "lon": 108.2062,
+    "lat": 16.0471
+  },
+  "weather": [
+    {
+      "id": 803,
+      "main": "Clouds",
+      "description": "broken clouds",
+      "icon": "04d"
+    }
+  ],
+  "base": "stations",
+  "main": {
+    "temp": 301.14,
+    "feels_like": 303.67,
+    "temp_min": 301.14,
+    "temp_max": 301.14,
+    "pressure": 1004,
+    "humidity": 69
+  },
+  "visibility": 10000,
+  "wind": {
+    "speed": 1.54,
+    "deg": 220
+  },
+  "clouds": {
+    "all": 75
+  },
+  "dt": 1664419329,
+  "sys": {
+    "type": 1,
+    "id": 9306,
+    "country": "VN",
+    "sunrise": 1664404605,
+    "sunset": 1664447907
+  },
+  "timezone": 25200,
+  "id": 1594018,
+  "name": "Ap Ba",
+  "cod": 200
+}
