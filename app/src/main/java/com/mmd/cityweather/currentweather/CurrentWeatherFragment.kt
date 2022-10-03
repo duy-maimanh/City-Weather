@@ -28,16 +28,18 @@ class CurrentWeatherFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-       //  set content's position below status bar.
+        //  set content's position below status bar.
         val statusBarHeightId =
             resources.getIdentifier("status_bar_height", "dimen", "android")
         val statusBarHeight = resources.getDimensionPixelSize(statusBarHeightId)
-        (binding.appBar.layoutParams as? MarginLayoutParams)?.topMargin = statusBarHeight
+        (binding.appBar.layoutParams as? MarginLayoutParams)?.topMargin =
+            statusBarHeight
         var toolbarBottomLineMargin = 0
         (binding.toolBarBottomLine.layoutParams as? MarginLayoutParams)?.let {
-           toolbarBottomLineMargin =  it.topMargin + statusBarHeight
+            toolbarBottomLineMargin = it.topMargin + statusBarHeight
         }
-        (binding.toolBarBottomLine.layoutParams as? MarginLayoutParams)?.topMargin = toolbarBottomLineMargin
+        (binding.toolBarBottomLine.layoutParams as? MarginLayoutParams)?.topMargin =
+            toolbarBottomLineMargin
 
 
         // calculate the alpha of background when user scroll content.
@@ -46,14 +48,17 @@ class CurrentWeatherFragment : Fragment() {
             val appBarHeight = appBarLayout!!.measuredHeight
             val screenBackgroundAlpha =
                 (appBarHeight.toFloat() - toolBarHeight + verticalOffset) / (appBarHeight.toFloat() - toolBarHeight) * 255
-            binding.coordinatorLayout.background.alpha = screenBackgroundAlpha.roundToInt()
+            binding.coordinatorLayout.background.alpha =
+                screenBackgroundAlpha.roundToInt()
 
 
-            val toolbarAlphaStartPosition = (appBarHeight.toFloat() - toolBarHeight) * 0.45f
+            val toolbarAlphaStartPosition =
+                (appBarHeight.toFloat() - toolBarHeight) * 0.45f
             if (verticalOffset <= -toolbarAlphaStartPosition) {
                 val toolbarBackgroundAlpha =
                     ((toolbarAlphaStartPosition + verticalOffset) / toolbarAlphaStartPosition) * 255
-                binding.toolBarBottomLine.background.alpha = -toolbarBackgroundAlpha.roundToInt()
+                binding.toolBarBottomLine.background.alpha =
+                    -toolbarBackgroundAlpha.roundToInt()
             } else {
                 binding.toolBarBottomLine.background.alpha = 0
             }
