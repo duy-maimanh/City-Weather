@@ -32,6 +32,9 @@ class MainActivity : AppCompatActivity() {
             window.attributes.layoutInDisplayCutoutMode =
                 WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
         }
+
+        // Icons set by the Splashscreen API do not work when starting an app from Android Studio. If the app gets closed and then restarted, the icon shows correctly.
+        // refer https://stackoverflow.com/questions/69656270/splashscreen-api-not-showing-icon
         val splashScreen = installSplashScreen()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
