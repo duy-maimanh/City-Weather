@@ -43,6 +43,7 @@ class ApiModule {
                 var request = chain.request()
                 val url = request.url.newBuilder()
                     .addQueryParameter("appid", ApiConstants.API_KEY)
+                    .addQueryParameter("units", ApiConstants.DEFAULT_UNIT)
                     .build()
                 request = request.newBuilder().url(url).build()
                 chain.proceed(request)

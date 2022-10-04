@@ -6,9 +6,15 @@
     <string name="tv_open_weather_api">Open weather API</string>
     <string name="tv_pressure_description">Áp suất không khí</string>
     <string name="tv_visibility_description">Tầm nhìn</string>
-    <string name="tv_uv">UV</string>
+    <string name="tv_cloudiness">Mây mù</string>
     <string name="tv_wind_speed_description">Gió</string>
     <string name="tv_humidity_description">Độ ẩm</string>
     <string name="tv_feel_like_degree_description">Nhiệt độ cảm nhận</string>
     <string name="btn_weather_chart">Biểu đồ thời tiết</string>
+    <string name="tv_temp">%1$s°C</string>
+    <string name="tv_humidity">%1$s\%%</string>
+    <string name="tv_wind_speed">%1$sm/s</string>
+    <string name="tv_pressure">%1$shPa</string>
+    <string name="tv_visibility">%1$sm</string>
+    <string name="tv_weather_detail">Chi tiết thời tiết</string>
 </resources>
