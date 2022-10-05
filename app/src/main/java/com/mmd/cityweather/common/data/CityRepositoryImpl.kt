@@ -1,25 +1,23 @@
 package com.mmd.cityweather.common.data
 
 import android.content.res.AssetManager
-import android.net.Uri
 import com.mmd.cityweather.common.data.database.Cache
 import com.mmd.cityweather.common.data.database.models.cities.Cities
+import com.mmd.cityweather.common.data.preferences.Preferences
 import com.mmd.cityweather.common.domain.model.CityInfoDetail
 import com.mmd.cityweather.common.domain.repositories.CityRepository
 import com.opencsv.CSVReader
 import io.reactivex.Flowable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.File
-import java.io.FileReader
 import java.io.InputStreamReader
 import java.nio.charset.Charset
-import java.nio.charset.StandardCharsets
 import javax.inject.Inject
 
 class CityRepositoryImpl @Inject constructor(
     private val cache: Cache,
-    private val assetManager: AssetManager?
+    private val assetManager: AssetManager?,
+    private val cityPreferences: Preferences
 ) : CityRepository {
 
     override fun getCityInformation(cityId: Long): Flowable<CityInfoDetail> {
@@ -65,5 +63,14 @@ class CityRepositoryImpl @Inject constructor(
             lon = data[3].toFloat(),
             country = data[4]
         )
+    }
+
+    override fun setSelectedCity(cityId: Long) {
+        cityPreferences.putSelectedCityId(cityId)
+    }
+
+    override fun getSelectedCityInfo(): Flowable<CityInfoDetail> {
+        val id = cityPreferences.getSelectedCityId()
+        return getCityInformation(id)
     }
 }

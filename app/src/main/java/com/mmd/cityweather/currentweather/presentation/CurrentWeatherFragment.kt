@@ -15,6 +15,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.mmd.cityweather.R
 import com.mmd.cityweather.common.domain.model.CityCurrentWeatherDetail
 import com.mmd.cityweather.common.presentation.Event
+import com.mmd.cityweather.common.presentation.models.UICurrentWeather
 import com.mmd.cityweather.databinding.FragmentCurrentWeatherBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -41,11 +42,6 @@ class CurrentWeatherFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewSetup()
         subscribeToViewStateUpdates()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        requestInitCurrentWeather()
     }
 
     private fun viewSetup() {
@@ -106,12 +102,12 @@ class CurrentWeatherFragment : Fragment() {
     }
 
     private fun updateDateToUI(
-        cityCurrentWeatherDetail:
-        CityCurrentWeatherDetail?
+        uiCurrentWeather:
+        UICurrentWeather?
     ) {
-        cityCurrentWeatherDetail?.let {
+        uiCurrentWeather?.let {
             with(binding) {
-                appBar.title = "Sai gon"
+                appBar.title = it.cityName
                 tvDegree.text = it.temp.roundToInt().toString()
                 tvFeelLikeDegree.text = String.format(
                     getString(R.string.tv_temp),

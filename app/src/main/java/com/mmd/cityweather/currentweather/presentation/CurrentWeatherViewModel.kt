@@ -1,11 +1,12 @@
 package com.mmd.cityweather.currentweather.presentation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mmd.cityweather.common.domain.model.CityCurrentWeatherDetail
+import com.mmd.cityweather.common.domain.model.CityInfoDetail
 import com.mmd.cityweather.common.presentation.Event
+import com.mmd.cityweather.common.presentation.models.UICurrentWeather
 import com.mmd.cityweather.currentweather.domain.GetCurrentWeather
+import com.mmd.cityweather.currentweather.domain.GetSelectedCityInfo
 import com.mmd.cityweather.currentweather.domain.RequestCurrentWeather
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -23,10 +24,12 @@ import javax.inject.Inject
 class CurrentWeatherViewModel @Inject constructor(
     private val getCurrentWeather: GetCurrentWeather,
     private val requestCurrentWeather: RequestCurrentWeather,
+    private val getSelectedCityInfo: GetSelectedCityInfo,
     private val compositeDisposable: CompositeDisposable
 ) : ViewModel() {
     private val _state = MutableStateFlow(CurrentWeatherViewState())
     val state: StateFlow<CurrentWeatherViewState> = _state.asStateFlow()
+    private lateinit var cityInfo: CityInfoDetail
 
     init {
         subscribeToCurrentWeatherUpdates()
@@ -45,22 +48,37 @@ class CurrentWeatherViewModel @Inject constructor(
 
     private fun requestCurrentWeather() {
         viewModelScope.launch {
-            requestCurrentWeather(1392685764L, 16.0472f, 108.219955f)
+            requestCurrentWeather(
+                cityInfo.cityId, cityInfo.lat, cityInfo.lon
+            )
         }
     }
 
+    // get city info and current weather from cache db.
     private fun subscribeToCurrentWeatherUpdates() {
-        getCurrentWeather(1392685764L)
-            .subscribeOn(Schedulers.computation())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
+        getSelectedCityInfo().flatMap { cityInfo ->
+            this.cityInfo = cityInfo
+            getCurrentWeather(cityInfo.cityId).map { weatherInfo ->
+                UICurrentWeather(
+                    cityInfo.name,
+                    weatherInfo.temp,
+                    weatherInfo.tempFeelLike,
+                    weatherInfo.humidity,
+                    weatherInfo.windSpeed,
+                    weatherInfo.cloudiness,
+                    weatherInfo.visibility,
+                    weatherInfo.pressure
+                )
+            }
+        }.subscribeOn(Schedulers.computation())
+            .observeOn(AndroidSchedulers.mainThread()).subscribe({
                 onNewWeather(it)
             }, {
                 onFailure(it)
             }).addTo(compositeDisposable)
     }
 
-    private fun onNewWeather(weather: CityCurrentWeatherDetail) {
+    private fun onNewWeather(weather: UICurrentWeather) {
         _state.update { oldState ->
             oldState.copy(loading = false, weather = weather)
         }

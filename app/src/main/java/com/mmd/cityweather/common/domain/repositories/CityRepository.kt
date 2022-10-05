@@ -8,4 +8,6 @@ interface CityRepository {
     suspend fun insertCity(city: CityInfoDetail)
     suspend fun isExist(): Boolean
     suspend fun getDefaultCity(): CityInfoDetail
+    fun setSelectedCity(cityId: Long)
+    fun getSelectedCityInfo(): Flowable<CityInfoDetail>
 }

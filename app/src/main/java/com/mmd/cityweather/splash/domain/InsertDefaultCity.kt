@@ -8,5 +8,9 @@ class InsertDefaultCity @Inject constructor(private val cityRepository: CityRepo
 
     suspend operator fun invoke(city: CityInfoDetail) {
         cityRepository.insertCity(city)
+        // after insert default city, also set it is selected city.
+        // Selected city mean : the city will be forecast when ever users
+        // open the app.
+        cityRepository.setSelectedCity(city.cityId)
     }
 }
