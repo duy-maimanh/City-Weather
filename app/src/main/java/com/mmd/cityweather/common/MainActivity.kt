@@ -8,6 +8,9 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import com.mmd.cityweather.R
 import com.mmd.cityweather.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 import dev.chrisbanes.insetter.applyInsetter
@@ -17,6 +20,7 @@ import dev.chrisbanes.insetter.applyInsetter
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private var hasData = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,19 +50,26 @@ class MainActivity : AppCompatActivity() {
         setupSplashScreen(splashScreen)
     }
 
-    private var isLoaded = false
     private fun setupSplashScreen(splashScreen: SplashScreen) {
         val content: View = findViewById(android.R.id.content)
         content.viewTreeObserver.addOnPreDrawListener(object :
             ViewTreeObserver.OnPreDrawListener {
             override fun onPreDraw(): Boolean {
-                return if (isLoaded) {
+                return if (hasData) {
                     content.viewTreeObserver.removeOnPreDrawListener(this)
+                    val navHostFragment =
+                        supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
+                    navHostFragment.navController
+                        .navigate(R.id.action_splashFragment_to_currentWeatherFragment)
                     true
                 } else {
                     false
                 }
             }
         })
+    }
+
+    fun updateDataStatus(status: Boolean) {
+        hasData = status
     }
 }

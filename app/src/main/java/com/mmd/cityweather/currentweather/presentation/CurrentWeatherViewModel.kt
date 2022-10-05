@@ -45,12 +45,12 @@ class CurrentWeatherViewModel @Inject constructor(
 
     private fun requestCurrentWeather() {
         viewModelScope.launch {
-            requestCurrentWeather(123321L, 16.0472f, 108.219955f)
+            requestCurrentWeather(1392685764L, 16.0472f, 108.219955f)
         }
     }
 
     private fun subscribeToCurrentWeatherUpdates() {
-        getCurrentWeather(123321L)
+        getCurrentWeather(1392685764L)
             .subscribeOn(Schedulers.computation())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({

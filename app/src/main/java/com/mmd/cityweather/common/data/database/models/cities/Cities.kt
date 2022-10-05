@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.mmd.cityweather.common.domain.model.CityInfoDetail
 
-@Entity(tableName = "Cities")
+@Entity(tableName = "cities")
 data class Cities(
     @PrimaryKey
     val cityId: Long,

@@ -15,4 +15,8 @@ abstract class CitiesDao {
 
     @Insert
     abstract fun insertCity(cities: Cities)
+
+    @Transaction
+    @Query("SELECT EXISTS(SELECT * FROM cities)")
+    abstract fun isExists(): Boolean
 }

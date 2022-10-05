@@ -27,4 +27,8 @@ class RoomCache @Inject constructor(
     override fun getCityInfo(cityId: Long): Flowable<Cities> {
         return cityDao.getInfoCity()
     }
+
+    override suspend fun cityIsExist(): Boolean {
+        return cityDao.isExists()
+    }
 }
