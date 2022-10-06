@@ -18,6 +18,8 @@
         <action
             android:id="@+id/action_splashFragment_to_currentWeatherFragment"
             app:destination="@id/currentWeatherFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:popUpTo="@id/splashFragment"
             app:popUpToInclusive="true" />
     </fragment>

@@ -13,7 +13,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.mmd.cityweather.R
-import com.mmd.cityweather.common.domain.model.CityCurrentWeatherDetail
 import com.mmd.cityweather.common.presentation.Event
 import com.mmd.cityweather.common.presentation.models.UICurrentWeather
 import com.mmd.cityweather.databinding.FragmentCurrentWeatherBinding
@@ -80,6 +79,10 @@ class CurrentWeatherFragment : Fragment() {
                 binding.toolBarBottomLine.background.alpha = 0
             }
         })
+
+        binding.swipeLayout.setOnRefreshListener {
+            viewModel.onEven(CurrentWeatherEvent.RequestRecentCurrentWeather)
+        }
     }
 
     private fun requestInitCurrentWeather() {
@@ -97,11 +100,27 @@ class CurrentWeatherFragment : Fragment() {
     }
 
     private fun updateScreenState(state: CurrentWeatherViewState) {
-        updateDateToUI(state.weather)
+        updateDataToUI(state.weather)
         handleFailures(state.failure)
+        handleRequestNewCurrentWeather(state.hasCityInfo, state.isFirstInit)
+        updateLoadingStatus(state.loading)
     }
 
-    private fun updateDateToUI(
+    private fun updateLoadingStatus(status: Boolean) {
+        binding.swipeLayout.isRefreshing = status
+    }
+
+    private fun handleRequestNewCurrentWeather(
+        hasCityInfo: Boolean,
+        isFirstInit: Boolean
+    ) {
+        // if user have city info and don't init current weather, call it.
+        if (hasCityInfo && isFirstInit) {
+            requestInitCurrentWeather()
+        }
+    }
+
+    private fun updateDataToUI(
         uiCurrentWeather:
         UICurrentWeather?
     ) {
