@@ -1,15 +1,19 @@
 package com.mmd.cityweather.currentweather.presentation
 
+import android.Manifest
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.mmd.cityweather.R
@@ -24,17 +28,40 @@ import kotlin.math.roundToInt
 class CurrentWeatherFragment : Fragment() {
     private lateinit var binding: FragmentCurrentWeatherBinding
     private val viewModel: CurrentWeatherViewModel by viewModels()
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+    // only work if the device have google play
+    private val locationPermissionRequest =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+            if (it) {
+                // Permission granted
+                fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+
+                }.addOnFailureListener { exception ->
+
+                }
+            } else {
+                // Permission denied
+            }
+        }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentCurrentWeatherBinding.inflate(
-            inflater, container,
-            false
+            inflater, container, false
         )
         return binding.root
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        fusedLocationClient =
+            LocationServices.getFusedLocationProviderClient(requireActivity())
+        locationPermissionRequest.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -111,8 +138,7 @@ class CurrentWeatherFragment : Fragment() {
     }
 
     private fun handleRequestNewCurrentWeather(
-        hasCityInfo: Boolean,
-        isFirstInit: Boolean
+        hasCityInfo: Boolean, isFirstInit: Boolean
     ) {
         // if user have city info and don't init current weather, call it.
         if (hasCityInfo && isFirstInit) {
@@ -120,10 +146,7 @@ class CurrentWeatherFragment : Fragment() {
         }
     }
 
-    private fun updateDataToUI(
-        uiCurrentWeather:
-        UICurrentWeather?
-    ) {
+    private fun updateDataToUI(uiCurrentWeather: UICurrentWeather?) {
         uiCurrentWeather?.let {
             with(binding) {
                 appBar.title = it.cityName
@@ -133,24 +156,20 @@ class CurrentWeatherFragment : Fragment() {
                     it.tempFeelLike.roundToInt().toString()
                 )
                 tvHumidity.text = String.format(
-                    getString(R.string.tv_humidity),
-                    it.humidity.toString()
+                    getString(R.string.tv_humidity), it.humidity.toString()
                 )
                 tvWindSpeed.text = String.format(
                     getString(R.string.tv_wind_speed),
                     it.windSpeed.roundToInt().toString()
                 )
                 tvCloudiness.text = String.format(
-                    getString(R.string.tv_humidity),
-                    it.cloudiness.toString()
+                    getString(R.string.tv_humidity), it.cloudiness.toString()
                 )
                 tvVisibility.text = String.format(
-                    getString(R.string.tv_visibility),
-                    it.visibility.toString()
+                    getString(R.string.tv_visibility), it.visibility.toString()
                 )
                 tvPressure.text = String.format(
-                    getString(R.string.tv_pressure),
-                    it.pressure.toString()
+                    getString(R.string.tv_pressure), it.pressure.toString()
                 )
                 tvWeatherDescription.text = it.weatherCondition
                 tvCurrentDay.text = it.getTimeOfData()

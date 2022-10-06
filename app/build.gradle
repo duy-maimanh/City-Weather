@@ -103,6 +103,9 @@ dependencies {
     // Windows inset
     implementation "dev.chrisbanes.insetter:insetter-dbx:0.6.1"
 
+    // android gsm
+    implementation 'com.google.android.gms:play-services-location:19.0.1'
+
     // optional - Test helpers
     testImplementation "androidx.room:room-testing:$room_version"
 
