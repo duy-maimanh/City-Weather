@@ -152,6 +152,8 @@ class CurrentWeatherFragment : Fragment() {
                     getString(R.string.tv_pressure),
                     it.pressure.toString()
                 )
+                tvWeatherDescription.text = it.weatherCondition
+                tvCurrentDay.text = it.getTimeOfData()
             }
         }
     }

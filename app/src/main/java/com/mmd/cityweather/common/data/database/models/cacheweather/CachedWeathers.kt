@@ -46,7 +46,7 @@ class CachedWeathers(
                 cityId = domainModel.cityId,
                 conditionId = domainModel.conditionId,
                 conditionName = domainModel.conditionName,
-                conditionDescription = domainModel.conditionName,
+                conditionDescription = domainModel.conditionDescription,
                 conditionIcon = domainModel.conditionIcon,
                 tempCurrent = domainModel.temp,
                 tempFeelLike = domainModel.tempFeelLike,

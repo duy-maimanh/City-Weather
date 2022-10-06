@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -71,13 +72,19 @@ class CurrentWeatherViewModel @Inject constructor(
         getCurrentWeather(cityInfo.cityId).map { weatherInfo ->
             UICurrentWeather(
                 cityInfo.name,
+                weatherInfo.conditionDescription.replaceFirstChar {
+                    if (it.isLowerCase()) it.titlecase(
+                        Locale.getDefault()
+                    ) else it.toString()
+                },
                 weatherInfo.temp,
                 weatherInfo.tempFeelLike,
                 weatherInfo.humidity,
                 weatherInfo.windSpeed,
                 weatherInfo.cloudiness,
                 weatherInfo.visibility,
-                weatherInfo.pressure
+                weatherInfo.pressure,
+                weatherInfo.timeOfData
             )
         }.subscribeOn(Schedulers.computation())
             .observeOn(AndroidSchedulers.mainThread()).subscribe({
