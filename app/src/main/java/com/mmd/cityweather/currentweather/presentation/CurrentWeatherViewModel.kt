@@ -1,10 +1,13 @@
 package com.mmd.cityweather.currentweather.presentation
 
+import android.os.SystemClock
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mmd.cityweather.common.domain.model.CityInfoDetail
 import com.mmd.cityweather.common.presentation.Event
 import com.mmd.cityweather.common.presentation.models.UICurrentWeather
+import com.mmd.cityweather.currentweather.domain.GetCityInfoByLocation
 import com.mmd.cityweather.currentweather.domain.GetCurrentWeather
 import com.mmd.cityweather.currentweather.domain.GetSelectedCityInfo
 import com.mmd.cityweather.currentweather.domain.RequestCurrentWeather
@@ -26,11 +29,12 @@ class CurrentWeatherViewModel @Inject constructor(
     private val getCurrentWeather: GetCurrentWeather,
     private val requestCurrentWeather: RequestCurrentWeather,
     private val getSelectedCityInfo: GetSelectedCityInfo,
-    private val compositeDisposable: CompositeDisposable
+    private val compositeDisposable: CompositeDisposable,
+    private val cityInfoByLocation: GetCityInfoByLocation
 ) : ViewModel() {
     private val _state = MutableStateFlow(CurrentWeatherViewState())
     val state: StateFlow<CurrentWeatherViewState> = _state.asStateFlow()
-    private lateinit var cityInfo: CityInfoDetail
+    private lateinit var defaultCityInfo: CityInfoDetail
 
     init {
         subscribeToSelectedCity()
@@ -44,6 +48,23 @@ class CurrentWeatherViewModel @Inject constructor(
             is CurrentWeatherEvent.RequestRecentCurrentWeather -> {
                 requestCurrentWeather()
             }
+            is CurrentWeatherEvent.ChangeNewLocation -> {
+                getCityInfoByLocation(event.lat, event.log)
+            }
+        }
+    }
+
+    private fun getCityInfoByLocation(lat: Double, lon: Double) {
+        viewModelScope.launch {
+            cityInfoByLocation(lat, lon)?.let { info ->
+                if (info.cityId != defaultCityInfo.cityId) {
+                    // show dialog ask user want to change your location
+                    // three options: no, yes, yes for every time.
+                    _state.update { oldState ->
+                        oldState.copy(differLocation = true)
+                    }
+                }
+            }
         }
     }
 
@@ -51,7 +72,7 @@ class CurrentWeatherViewModel @Inject constructor(
         onLoadingStatus(true)
         viewModelScope.launch {
             requestCurrentWeather(
-                cityInfo.cityId, cityInfo.lat, cityInfo.lon
+                defaultCityInfo.cityId, defaultCityInfo.lat, defaultCityInfo.lon
             )
         }
     }
@@ -59,7 +80,7 @@ class CurrentWeatherViewModel @Inject constructor(
     private fun subscribeToSelectedCity() {
         getSelectedCityInfo().subscribeOn(Schedulers.computation())
             .observeOn(AndroidSchedulers.mainThread()).subscribe({
-                cityInfo = it
+                defaultCityInfo = it
                 subscribeToCurrentWeatherUpdates()
                 onHasCityInfo(true)
             }, {
@@ -69,9 +90,9 @@ class CurrentWeatherViewModel @Inject constructor(
 
     // get current weather from cache db.
     private fun subscribeToCurrentWeatherUpdates() {
-        getCurrentWeather(cityInfo.cityId).map { weatherInfo ->
+        getCurrentWeather(defaultCityInfo.cityId).map { weatherInfo ->
             UICurrentWeather(
-                cityInfo.name,
+                defaultCityInfo.name,
                 weatherInfo.conditionDescription.replaceFirstChar {
                     if (it.isLowerCase()) it.titlecase(
                         Locale.getDefault()
@@ -118,6 +139,13 @@ class CurrentWeatherViewModel @Inject constructor(
         _state.update { oldState ->
             oldState.copy(loading = false, failure = Event(throwable))
         }
+    }
+
+    private inline fun benchmark(block: () -> Unit) {
+        var timeRun = SystemClock.uptimeMillis()
+        block()
+        timeRun = SystemClock.uptimeMillis() - timeRun
+        Log.d("Speed:", "$timeRun millis")
     }
 
     override fun onCleared() {

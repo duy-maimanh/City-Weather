@@ -2,7 +2,6 @@ package com.mmd.cityweather.currentweather.presentation
 
 import android.Manifest
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,7 +36,10 @@ class CurrentWeatherFragment : Fragment() {
             if (it) {
                 // Permission granted
                 fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-
+                    viewModel.onEven(
+                        CurrentWeatherEvent.ChangeNewLocation
+                            (location.latitude, location.longitude)
+                    )
                 }.addOnFailureListener { exception ->
 
                 }
@@ -62,13 +64,13 @@ class CurrentWeatherFragment : Fragment() {
         super.onCreate(savedInstanceState)
         fusedLocationClient =
             LocationServices.getFusedLocationProviderClient(requireActivity())
-        locationPermissionRequest.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewSetup()
         subscribeToViewStateUpdates()
+        locationPermissionRequest.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
     }
 
     private fun viewSetup() {
@@ -132,10 +134,17 @@ class CurrentWeatherFragment : Fragment() {
         handleFailures(state.failure)
         handleRequestNewCurrentWeather(state.hasCityInfo, state.isFirstInit)
         updateLoadingStatus(state.loading)
+        handleWhenDetectNewLocation(state.differLocation)
     }
 
     private fun updateLoadingStatus(status: Boolean) {
         binding.swipeLayout.isRefreshing = status
+    }
+
+    private fun handleWhenDetectNewLocation(status: Boolean) {
+        if (status) {
+            UpdateYourLocationDialog().show(childFragmentManager, "")
+        }
     }
 
     private fun handleRequestNewCurrentWeather(
