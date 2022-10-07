@@ -1,11 +1,10 @@
-package com.mmd.cityweather.data
+package com.mmd.cityweather.currentweather.domain
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.platform.app.InstrumentationRegistry
+import com.google.common.truth.Truth
 import com.mmd.cityweather.common.data.CityRepositoryImpl
 import com.mmd.cityweather.common.data.database.Cache
-import com.mmd.cityweather.common.data.database.CityWeatherDatabase
-import com.mmd.cityweather.common.data.database.RoomCache
 import com.mmd.cityweather.common.data.di.CacheModule
 import com.mmd.cityweather.common.data.preferences.Preferences
 import com.mmd.cityweather.common.domain.model.CityInfoDetail
@@ -22,7 +21,7 @@ import javax.inject.Inject
 
 @HiltAndroidTest
 @UninstallModules(CacheModule::class)
-class CityRepositoryImplTest {
+class GetCityInfoByLocationTest {
     private lateinit var cityRepository: CityRepository
 
     private lateinit var fakePreferences: Preferences
@@ -35,6 +34,8 @@ class CityRepositoryImplTest {
 
     @Inject
     lateinit var cache: Cache
+
+    private lateinit var getCityInfoByLocation: GetCityInfoByLocation
 
     @Before
     fun setup() {
@@ -49,32 +50,17 @@ class CityRepositoryImplTest {
                 InstrumentationRegistry.getInstrumentation().context.assets,
                 fakePreferences
             )
+        getCityInfoByLocation = GetCityInfoByLocation(cityRepository)
     }
 
     @Test
     fun storeCity_success() {
-        // Given
-        val cityInfoDetail = CityInfoDetail(
-            12345,
-            "Da Nang",
-            16.0,
-            103.0,
-            "VN"
-        )
-
+        val expectedCity = "Đà Nẵng"
         runBlocking {
-            // When
-            cityRepository.insertCity(cityInfoDetail)
 
-            // Then
-            val observerTest =
-                cityRepository.getCityInformation(cityInfoDetail.cityId).test()
-
-            observerTest.assertNoErrors()
-            observerTest.assertNoErrors()
-            observerTest.assertValue {
-                it.cityId == cityInfoDetail.cityId && it.name == cityInfoDetail.name
-            }
+            val city = getCityInfoByLocation.invoke(16.0545, 108.0717)
+            assert(city != null)
+            Truth.assertThat(city!!.name).isEqualTo(expectedCity)
         }
     }
 }

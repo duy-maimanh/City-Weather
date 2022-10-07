@@ -16,7 +16,7 @@ data class UICurrentWeather(
     private val timeOfData: Date
 ) {
     fun getTimeOfData(): String {
-        val df = SimpleDateFormat("E dd-M-yyyy hh:mm:ss zzzz", Locale.ENGLISH)
+        val df = SimpleDateFormat("E d-M-yyyy hh:mm zzzz", Locale.US)
         return df.format(timeOfData)
     }
 }

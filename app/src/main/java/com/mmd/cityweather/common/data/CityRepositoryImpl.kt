@@ -37,8 +37,8 @@ class CityRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getDefaultCity(): CityInfoDetail {
-        var data = listOf("...", "...", "0", "0", "...", "...", "0")
-        withContext(Dispatchers.IO) {
+        return withContext(Dispatchers.IO) {
+            var data = listOf("...", "...", "0", "0", "...", "...", "0")
             assetManager?.open("cities/worldcities.csv")?.let { inputStream ->
                 val fr =
                     InputStreamReader(inputStream, Charset.forName("UTF-8"))
@@ -55,14 +55,14 @@ class CityRepositoryImpl @Inject constructor(
                     }
                 }
             }
+            CityInfoDetail(
+                cityId = data[6].toLong(),
+                name = data[0],
+                lat = data[2].toDouble(),
+                lon = data[3].toDouble(),
+                country = data[4]
+            )
         }
-        return CityInfoDetail(
-            cityId = data[6].toLong(),
-            name = data[0],
-            lat = data[2].toFloat(),
-            lon = data[3].toFloat(),
-            country = data[4]
-        )
     }
 
     override fun setSelectedCity(cityId: Long) {
@@ -72,5 +72,38 @@ class CityRepositoryImpl @Inject constructor(
     override fun getSelectedCityInfo(): Flowable<CityInfoDetail> {
         val id = cityPreferences.getSelectedCityId()
         return getCityInformation(id)
+    }
+
+    override suspend fun getAllCityInfoOnDisk(): List<CityInfoDetail> {
+        return withContext(Dispatchers.IO) {
+            val cityInfoDetails = mutableListOf<CityInfoDetail>()
+            assetManager?.open("cities/worldcities.csv")?.let { inputStream ->
+                val fr =
+                    InputStreamReader(inputStream, Charset.forName("UTF-8"))
+                // format city,city_ascii,lat,lng,country,iso2,id
+                fr.use {
+                    val reader = CSVReader(it)
+                    reader.use { r ->
+                        // skip the title
+                        r.readNext()
+                        var line = r.readNext()
+
+                        while (line != null) {
+                            cityInfoDetails.add(
+                                CityInfoDetail(
+                                    cityId = line[6].toLong(),
+                                    name = line[0],
+                                    lat = line[2].toDouble(),
+                                    lon = line[3].toDouble(),
+                                    country = line[4]
+                                )
+                            )
+                            line = r.readNext()
+                        }
+                    }
+                }
+            }
+            cityInfoDetails
+        }
     }
 }

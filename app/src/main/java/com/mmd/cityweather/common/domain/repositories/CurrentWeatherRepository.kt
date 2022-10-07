@@ -5,7 +5,7 @@ import io.reactivex.Flowable
 
 interface CurrentWeatherRepository {
     fun getCurrentWeather(cityId: Long): Flowable<CityCurrentWeatherDetail>
-    suspend fun requestNewCurrentWeather(cityId: Long, lat: Float, lon: Float):
+    suspend fun requestNewCurrentWeather(cityId: Long, lat: Double, lon: Double):
             CityCurrentWeatherDetail
     suspend fun storeCurrentWeather(weather: CityCurrentWeatherDetail)
 }

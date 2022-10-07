@@ -12,8 +12,8 @@ class RequestCurrentWeather @Inject constructor(
 
     suspend operator fun invoke(
         cityId: Long,
-        latitude: Float,
-        longitude: Float
+        latitude: Double,
+        longitude: Double
     ) {
         withContext(Dispatchers.IO) {
             val currentWeather =

@@ -22,7 +22,7 @@ class CurrentWeatherRepositoryImpl @Inject constructor(
     }
 
     override suspend fun requestNewCurrentWeather(
-        cityId: Long, lat: Float, lon: Float
+        cityId: Long, lat: Double, lon: Double
     ): CityCurrentWeatherDetail {
         val apiWeather = api.getCurrentWeather(lat = lat, lon)
         return apiWeatherMapper.mapToDomain(apiWeather).apply {

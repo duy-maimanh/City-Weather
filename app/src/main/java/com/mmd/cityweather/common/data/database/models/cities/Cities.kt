@@ -9,8 +9,8 @@ data class Cities(
     @PrimaryKey
     val cityId: Long,
     val name: String,
-    val latitude: Float,
-    val longitude: Float,
+    val latitude: Double,
+    val longitude: Double,
     val country: String
 ) {
     companion object {
