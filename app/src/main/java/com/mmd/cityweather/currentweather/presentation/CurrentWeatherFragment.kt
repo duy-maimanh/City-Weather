@@ -137,7 +137,6 @@ class CurrentWeatherFragment : Fragment() {
         handleFailures(state.failure)
         handleRequestNewCurrentWeather(state.hasCityInfo, state.isFirstInit)
         updateLoadingStatus(state.loading)
-        handleWhenDetectNewLocation(state.differLocation)
         handleMoveToCorrectLocation(state.moveToCorrectLocation)
     }
 
@@ -149,14 +148,6 @@ class CurrentWeatherFragment : Fragment() {
 
     private fun updateLoadingStatus(status: Boolean) {
         binding.swipeLayout.isRefreshing = status
-    }
-
-    private fun handleWhenDetectNewLocation(status: Boolean) {
-        if (status) {
-            UpdateYourLocationDialog(){
-                viewModel.onEven(CurrentWeatherEvent.MoveToCurrentLocation)
-            }.show(childFragmentManager, "")
-        }
     }
 
     private fun handleRequestNewCurrentWeather(

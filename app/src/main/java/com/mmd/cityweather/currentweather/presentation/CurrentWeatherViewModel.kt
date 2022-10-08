@@ -35,7 +35,6 @@ class CurrentWeatherViewModel @Inject constructor(
     private val _state = MutableStateFlow(CurrentWeatherViewState())
     val state: StateFlow<CurrentWeatherViewState> = _state.asStateFlow()
     private lateinit var selectedCityInfo: CityInfoDetail
-    private lateinit var newCityInfo: CityInfoDetail
 
     init {
         subscribeToSelectedCity()
@@ -52,25 +51,6 @@ class CurrentWeatherViewModel @Inject constructor(
             is CurrentWeatherEvent.ChangeNewLocation -> {
                 getCityInfoByLocation(event.lat, event.log)
             }
-            is CurrentWeatherEvent.MoveToCurrentLocation -> {
-                viewModelScope.launch {
-                    // if it is auto, remove it.
-                    if (selectedCityInfo.isAuto) {
-                        // remove the city from database
-                        removeCity(selectedCityInfo.cityId)
-                    }
-
-                    // add new city if it already just replace it
-                    // save selected into preference for next time open
-                    insertDefaultCity(newCityInfo)
-
-                    // send event to open new fragment
-                    _state.update { oldState ->
-                        oldState.copy(moveToCorrectLocation = true)
-                    }
-                    // pop
-                }
-            }
         }
     }
 
@@ -78,11 +58,19 @@ class CurrentWeatherViewModel @Inject constructor(
         viewModelScope.launch {
             cityInfoByLocation(lat, lon)?.let { info ->
                 if (info.cityId != selectedCityInfo.cityId) {
-                    // show dialog ask user want to change your location
-                    // three options: no, yes, yes for every time.
-                    newCityInfo = info
-                    _state.update { oldState ->
-                        oldState.copy(differLocation = true)
+                    // if it is auto, remove it.
+                    if (selectedCityInfo.isAuto) {
+                        // remove the city from database
+                        removeCity(selectedCityInfo.cityId)
+
+                        // add new city if it already just replace it
+                        // save selected into preference for next time open
+                        insertDefaultCity(info)
+
+                        // send event to open new fragment
+                        _state.update { oldState ->
+                            oldState.copy(moveToCorrectLocation = true)
+                        }
                     }
                 }
             }
