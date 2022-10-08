@@ -38,10 +38,9 @@ class CityRepositoryImpl @Inject constructor(
 
     override suspend fun getDefaultCity(): CityInfoDetail {
         return withContext(Dispatchers.IO) {
-            var data = listOf("...", "...", "0", "0", "...", "...", "0")
+            var data = listOf<String>()
             assetManager?.open("cities/worldcities.csv")?.let { inputStream ->
-                val fr =
-                    InputStreamReader(inputStream, Charset.forName("UTF-8"))
+                val fr = InputStreamReader(inputStream, Charset.forName("UTF-8"))
                 // format city,city_ascii,lat,lng,country,iso2,id
                 fr.use {
                     val reader = CSVReader(it)
@@ -78,8 +77,7 @@ class CityRepositoryImpl @Inject constructor(
         return withContext(Dispatchers.IO) {
             val cityInfoDetails = mutableListOf<CityInfoDetail>()
             assetManager?.open("cities/worldcities.csv")?.let { inputStream ->
-                val fr =
-                    InputStreamReader(inputStream, Charset.forName("UTF-8"))
+                val fr = InputStreamReader(inputStream, Charset.forName("UTF-8"))
                 // format city,city_ascii,lat,lng,country,iso2,id
                 fr.use {
                     val reader = CSVReader(it)

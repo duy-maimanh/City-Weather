@@ -36,6 +36,8 @@ class CurrentWeatherFragment : Fragment() {
             if (it) {
                 // Permission granted
                 fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                    if (location == null) return@addOnSuccessListener
+
                     viewModel.onEven(
                         CurrentWeatherEvent.ChangeNewLocation
                             (location.latitude, location.longitude)
