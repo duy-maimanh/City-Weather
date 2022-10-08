@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.appbar.AppBarLayout
@@ -137,6 +138,13 @@ class CurrentWeatherFragment : Fragment() {
         handleRequestNewCurrentWeather(state.hasCityInfo, state.isFirstInit)
         updateLoadingStatus(state.loading)
         handleWhenDetectNewLocation(state.differLocation)
+        handleMoveToCorrectLocation(state.moveToCorrectLocation)
+    }
+
+    private fun handleMoveToCorrectLocation(status: Boolean) {
+        if (status) {
+            findNavController().navigate(R.id.action_currentWeatherFragment_to_currentWeatherFragment)
+        }
     }
 
     private fun updateLoadingStatus(status: Boolean) {
@@ -145,7 +153,9 @@ class CurrentWeatherFragment : Fragment() {
 
     private fun handleWhenDetectNewLocation(status: Boolean) {
         if (status) {
-            UpdateYourLocationDialog().show(childFragmentManager, "")
+            UpdateYourLocationDialog(){
+                viewModel.onEven(CurrentWeatherEvent.MoveToCurrentLocation)
+            }.show(childFragmentManager, "")
         }
     }
 

@@ -7,10 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.mmd.cityweather.common.domain.model.CityInfoDetail
 import com.mmd.cityweather.common.presentation.Event
 import com.mmd.cityweather.common.presentation.models.UICurrentWeather
-import com.mmd.cityweather.currentweather.domain.GetCityInfoByLocation
-import com.mmd.cityweather.currentweather.domain.GetCurrentWeather
-import com.mmd.cityweather.currentweather.domain.GetSelectedCityInfo
-import com.mmd.cityweather.currentweather.domain.RequestCurrentWeather
+import com.mmd.cityweather.currentweather.domain.*
+import com.mmd.cityweather.splash.domain.InsertDefaultCity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -28,13 +26,16 @@ import javax.inject.Inject
 class CurrentWeatherViewModel @Inject constructor(
     private val getCurrentWeather: GetCurrentWeather,
     private val requestCurrentWeather: RequestCurrentWeather,
-    private val getSelectedCityInfo: GetSelectedCityInfo,
-    private val compositeDisposable: CompositeDisposable,
-    private val cityInfoByLocation: GetCityInfoByLocation
+    private val getSelectedCityInfo: GetSelectedCity,
+    private val cityInfoByLocation: GetCityByLocation,
+    private val removeCity: RemoveCity,
+    private val insertDefaultCity: InsertDefaultCity,
+    private val compositeDisposable: CompositeDisposable
 ) : ViewModel() {
     private val _state = MutableStateFlow(CurrentWeatherViewState())
     val state: StateFlow<CurrentWeatherViewState> = _state.asStateFlow()
-    private lateinit var defaultCityInfo: CityInfoDetail
+    private lateinit var selectedCityInfo: CityInfoDetail
+    private lateinit var newCityInfo: CityInfoDetail
 
     init {
         subscribeToSelectedCity()
@@ -51,15 +52,35 @@ class CurrentWeatherViewModel @Inject constructor(
             is CurrentWeatherEvent.ChangeNewLocation -> {
                 getCityInfoByLocation(event.lat, event.log)
             }
+            is CurrentWeatherEvent.MoveToCurrentLocation -> {
+                viewModelScope.launch {
+                    // if it is auto, remove it.
+                    if (selectedCityInfo.isAuto) {
+                        // remove the city from database
+                        removeCity(selectedCityInfo.cityId)
+                    }
+
+                    // add new city if it already just replace it
+                    // save selected into preference for next time open
+                    insertDefaultCity(newCityInfo)
+
+                    // send event to open new fragment
+                    _state.update { oldState ->
+                        oldState.copy(moveToCorrectLocation = true)
+                    }
+                    // pop
+                }
+            }
         }
     }
 
     private fun getCityInfoByLocation(lat: Double, lon: Double) {
         viewModelScope.launch {
             cityInfoByLocation(lat, lon)?.let { info ->
-                if (info.cityId != defaultCityInfo.cityId) {
+                if (info.cityId != selectedCityInfo.cityId) {
                     // show dialog ask user want to change your location
                     // three options: no, yes, yes for every time.
+                    newCityInfo = info
                     _state.update { oldState ->
                         oldState.copy(differLocation = true)
                     }
@@ -72,7 +93,7 @@ class CurrentWeatherViewModel @Inject constructor(
         onLoadingStatus(true)
         viewModelScope.launch {
             requestCurrentWeather(
-                defaultCityInfo.cityId, defaultCityInfo.lat, defaultCityInfo.lon
+                selectedCityInfo.cityId, selectedCityInfo.lat, selectedCityInfo.lon
             )
         }
     }
@@ -80,7 +101,7 @@ class CurrentWeatherViewModel @Inject constructor(
     private fun subscribeToSelectedCity() {
         getSelectedCityInfo().subscribeOn(Schedulers.computation())
             .observeOn(AndroidSchedulers.mainThread()).subscribe({
-                defaultCityInfo = it
+                selectedCityInfo = it
                 subscribeToCurrentWeatherUpdates()
                 onHasCityInfo(true)
             }, {
@@ -90,9 +111,9 @@ class CurrentWeatherViewModel @Inject constructor(
 
     // get current weather from cache db.
     private fun subscribeToCurrentWeatherUpdates() {
-        getCurrentWeather(defaultCityInfo.cityId).map { weatherInfo ->
+        getCurrentWeather(selectedCityInfo.cityId).map { weatherInfo ->
             UICurrentWeather(
-                defaultCityInfo.name,
+                selectedCityInfo.name,
                 weatherInfo.conditionDescription.replaceFirstChar {
                     if (it.isLowerCase()) it.titlecase(
                         Locale.getDefault()

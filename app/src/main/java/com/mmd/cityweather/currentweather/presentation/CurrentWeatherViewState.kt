@@ -9,5 +9,6 @@ data class CurrentWeatherViewState(
     val hasCityInfo: Boolean = false,
     val differLocation: Boolean = false,
     val weather: UICurrentWeather? = null,
+    val moveToCorrectLocation: Boolean = false,
     val failure: Event<Throwable>? = null
 )

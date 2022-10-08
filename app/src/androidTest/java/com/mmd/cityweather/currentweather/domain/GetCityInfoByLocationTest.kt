@@ -7,7 +7,6 @@ import com.mmd.cityweather.common.data.CityRepositoryImpl
 import com.mmd.cityweather.common.data.database.Cache
 import com.mmd.cityweather.common.data.di.CacheModule
 import com.mmd.cityweather.common.data.preferences.Preferences
-import com.mmd.cityweather.common.domain.model.CityInfoDetail
 import com.mmd.cityweather.common.domain.repositories.CityRepository
 import com.mmd.cityweather.data.preferences.FakePreferences
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -35,7 +34,7 @@ class GetCityInfoByLocationTest {
     @Inject
     lateinit var cache: Cache
 
-    private lateinit var getCityInfoByLocation: GetCityInfoByLocation
+    private lateinit var getCityInfoByLocation: GetCityByLocation
 
     @Before
     fun setup() {
@@ -50,7 +49,7 @@ class GetCityInfoByLocationTest {
                 InstrumentationRegistry.getInstrumentation().context.assets,
                 fakePreferences
             )
-        getCityInfoByLocation = GetCityInfoByLocation(cityRepository)
+        getCityInfoByLocation = GetCityByLocation(cityRepository)
     }
 
     @Test

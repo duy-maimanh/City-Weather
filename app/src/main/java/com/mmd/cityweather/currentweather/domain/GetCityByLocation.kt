@@ -5,7 +5,7 @@ import com.mmd.cityweather.common.domain.repositories.CityRepository
 import javax.inject.Inject
 import kotlin.math.*
 
-class GetCityInfoByLocation @Inject constructor(
+class GetCityByLocation @Inject constructor(
     private val cityRepository: CityRepository
 ) {
 

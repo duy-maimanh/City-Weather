@@ -11,7 +11,8 @@ data class Cities(
     val name: String,
     val latitude: Double,
     val longitude: Double,
-    val country: String
+    val country: String,
+    val isAuto: Boolean = false
 ) {
     companion object {
         fun fromDomain(domainModel: CityInfoDetail): Cities {
@@ -20,12 +21,13 @@ data class Cities(
                 domainModel.name,
                 domainModel.lat,
                 domainModel.lon,
-                domainModel.country
+                domainModel.country,
+                domainModel.isAuto
             )
         }
     }
 
     fun toDomain(): CityInfoDetail {
-        return CityInfoDetail(cityId, name, latitude, longitude, country)
+        return CityInfoDetail(cityId, name, latitude, longitude, country, isAuto)
     }
 }

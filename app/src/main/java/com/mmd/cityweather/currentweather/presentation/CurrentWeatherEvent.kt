@@ -5,4 +5,5 @@ sealed class CurrentWeatherEvent {
     object RequestRecentCurrentWeather : CurrentWeatherEvent()
     data class ChangeNewLocation(val lat: Double, val log: Double) :
         CurrentWeatherEvent()
+    object MoveToCurrentLocation: CurrentWeatherEvent()
 }

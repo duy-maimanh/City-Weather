@@ -31,4 +31,8 @@ class RoomCache @Inject constructor(
     override suspend fun cityIsExist(): Boolean {
         return cityDao.isExists()
     }
+
+    override suspend fun deleteCityById(cityId: Long) {
+        return cityDao.delete(cityId)
+    }
 }

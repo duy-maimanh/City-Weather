@@ -59,7 +59,8 @@ class CityRepositoryImpl @Inject constructor(
                 name = data[0],
                 lat = data[2].toDouble(),
                 lon = data[3].toDouble(),
-                country = data[4]
+                country = data[4],
+                true
             )
         }
     }
@@ -102,6 +103,12 @@ class CityRepositoryImpl @Inject constructor(
                 }
             }
             cityInfoDetails
+        }
+    }
+
+    override suspend fun deleteCityById(cityId: Long) {
+        withContext(Dispatchers.IO) {
+            cache.deleteCityById(cityId)
         }
     }
 }
