@@ -13,6 +13,7 @@ data class UICurrentWeather(
     val cloudiness: Int,
     val visibility: Int,
     val pressure: Int,
+    val backgroundId: Int,
     private val timeOfData: Date
 ) {
     fun getTimeOfData(): String {

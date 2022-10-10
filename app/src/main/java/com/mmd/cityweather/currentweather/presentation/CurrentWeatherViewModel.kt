@@ -30,7 +30,8 @@ class CurrentWeatherViewModel @Inject constructor(
     private val cityInfoByLocation: GetCityByLocation,
     private val removeCity: RemoveCity,
     private val insertDefaultCity: InsertDefaultCity,
-    private val compositeDisposable: CompositeDisposable
+    private val compositeDisposable: CompositeDisposable,
+    private val getBackgroundForCurrentWeather: GetBackgroundForCurrentWeather
 ) : ViewModel() {
     private val _state = MutableStateFlow(CurrentWeatherViewState())
     val state: StateFlow<CurrentWeatherViewState> = _state.asStateFlow()
@@ -114,6 +115,7 @@ class CurrentWeatherViewModel @Inject constructor(
                 weatherInfo.cloudiness,
                 weatherInfo.visibility,
                 weatherInfo.pressure,
+                getBackgroundForCurrentWeather(weatherInfo.conditionId.toInt()),
                 weatherInfo.timeOfData
             )
         }.subscribeOn(Schedulers.computation())

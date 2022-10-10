@@ -1,20 +1,22 @@
 package com.mmd.cityweather.currentweather.presentation
 
 import android.Manifest
+import android.location.Location
 import android.os.Bundle
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.*
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.mmd.cityweather.R
@@ -24,6 +26,7 @@ import com.mmd.cityweather.databinding.FragmentCurrentWeatherBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
+
 
 @AndroidEntryPoint
 class CurrentWeatherFragment : Fragment() {
@@ -37,12 +40,42 @@ class CurrentWeatherFragment : Fragment() {
             if (it) {
                 // Permission granted
                 fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-                    if (location == null) return@addOnSuccessListener
+                    if (location != null) {
+                        viewModel.onEven(
+                            CurrentWeatherEvent.ChangeNewLocation
+                                (location.latitude, location.longitude)
+                        )
+                    } else {
+                        val locationRequest: LocationRequest = LocationRequest()
+                            .setPriority(
+                                LocationRequest.PRIORITY_LOW_POWER
+                            )
+                            .setInterval(10000)
+                            .setFastestInterval(
+                                1000
+                            )
+                            .setNumUpdates(1)
 
-                    viewModel.onEven(
-                        CurrentWeatherEvent.ChangeNewLocation
-                            (location.latitude, location.longitude)
-                    )
+
+                        // Initialize location call back
+                        val locationCallback: LocationCallback = object : LocationCallback() {
+                            override fun onLocationResult(
+                                locationResult: LocationResult
+                            ) {
+                                // Initialize
+                                // location
+                                val location1: Location = locationResult
+                                    .lastLocation ?: return
+                                viewModel.onEven(
+                                    CurrentWeatherEvent.ChangeNewLocation
+                                        (location1.latitude, location1.longitude)
+                                )
+                            }
+                        }
+                        // Request location updates
+                        fusedLocationClient.requestLocationUpdates(locationRequest,locationCallback,
+                            Looper.myLooper())
+                    }
                 }.addOnFailureListener { exception ->
 
                 }
@@ -162,6 +195,8 @@ class CurrentWeatherFragment : Fragment() {
     private fun updateDataToUI(uiCurrentWeather: UICurrentWeather?) {
         uiCurrentWeather?.let {
             with(binding) {
+                coordinatorLayout.background =
+                    ContextCompat.getDrawable(requireContext(), it.backgroundId)
                 appBar.title = it.cityName
                 tvDegree.text = it.temp.roundToInt().toString()
                 tvFeelLikeDegree.text = String.format(
