@@ -1,20 +1,21 @@
 <resources>
     <string name="app_name">City Weather</string>
-    <string name="menu_setting">Cài đặt</string>
-    <string name="menu_manage_cities">Quản lý thành phố</string>
+    <string name="menu_setting">Setting</string>
+    <string name="menu_manage_cities">Cities manage</string>
     <string name="tv_celsius_unit">°C</string>
     <string name="tv_open_weather_api">Open weather API</string>
-    <string name="tv_pressure_description">Áp suất không khí</string>
-    <string name="tv_visibility_description">Tầm nhìn</string>
-    <string name="tv_cloudiness">Mây mù</string>
-    <string name="tv_wind_speed_description">Gió</string>
-    <string name="tv_humidity_description">Độ ẩm</string>
-    <string name="tv_feel_like_degree_description">Nhiệt độ cảm nhận</string>
-    <string name="btn_weather_chart">Biểu đồ thời tiết</string>
+    <string name="tv_pressure_description">Pressure</string>
+    <string name="tv_visibility_description">Visibility</string>
+    <string name="tv_cloudiness">Cloudiness</string>
+    <string name="tv_wind_speed_description">Wind speed</string>
+    <string name="tv_humidity_description">Humidity</string>
+    <string name="tv_feel_like_degree_description">Feels-like
+        Temperature</string>
+    <string name="btn_weather_chart">Weather chart</string>
     <string name="tv_temp">%1$s°C</string>
     <string name="tv_humidity">%1$s\%%</string>
     <string name="tv_wind_speed">%1$sm/s</string>
     <string name="tv_pressure">%1$shPa</string>
     <string name="tv_visibility">%1$sm</string>
-    <string name="tv_weather_detail">Chi tiết thời tiết</string>
+    <string name="tv_weather_detail">Weather detail</string>
 </resources>
