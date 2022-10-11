@@ -1,25 +1,19 @@
 package com.mmd.cityweather.data
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.room.Room
 import androidx.test.platform.app.InstrumentationRegistry
-import com.google.common.truth.Truth
 import com.mmd.cityweather.common.data.CityRepositoryImpl
-import com.mmd.cityweather.common.data.CurrentWeatherRepositoryImpl
-import com.mmd.cityweather.common.data.api.CityWeatherApi
 import com.mmd.cityweather.common.data.database.Cache
 import com.mmd.cityweather.common.data.database.CityWeatherDatabase
 import com.mmd.cityweather.common.data.database.RoomCache
 import com.mmd.cityweather.common.data.di.CacheModule
+import com.mmd.cityweather.common.data.preferences.Preferences
 import com.mmd.cityweather.common.domain.model.CityInfoDetail
 import com.mmd.cityweather.common.domain.repositories.CityRepository
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
+import com.mmd.cityweather.data.preferences.FakePreferences
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -31,7 +25,7 @@ import javax.inject.Inject
 class CityRepositoryImplTest {
     private lateinit var cityRepository: CityRepository
 
-    private lateinit var cache: Cache
+    private lateinit var fakePreferences: Preferences
 
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
@@ -40,16 +34,21 @@ class CityRepositoryImplTest {
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Inject
-    lateinit var database: CityWeatherDatabase
+    lateinit var cache: Cache
 
     @Before
     fun setup() {
 
         hiltRule.inject()
 
-        cache = RoomCache(database.weatherDao(), database.citiesDao())
+        fakePreferences = FakePreferences()
 
-        cityRepository = CityRepositoryImpl(cache)
+        cityRepository =
+            CityRepositoryImpl(
+                cache,
+                InstrumentationRegistry.getInstrumentation().context.assets,
+                fakePreferences
+            )
     }
 
     @Test
@@ -58,8 +57,8 @@ class CityRepositoryImplTest {
         val cityInfoDetail = CityInfoDetail(
             12345,
             "Da Nang",
-            16.0f,
-            103.0f,
+            16.0,
+            103.0,
             "VN"
         )
 

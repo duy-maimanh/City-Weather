@@ -1,9 +1,6 @@
 package com.mmd.cityweather.common.data.database.daos
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Transaction
+import androidx.room.*
 import com.mmd.cityweather.common.data.database.models.cities.Cities
 import io.reactivex.Flowable
 
@@ -15,4 +12,12 @@ abstract class CitiesDao {
 
     @Insert
     abstract fun insertCity(cities: Cities)
+
+    @Transaction
+    @Query("SELECT EXISTS(SELECT * FROM cities)")
+    abstract fun isExists(): Boolean
+
+    @Transaction
+    @Query("DELETE FROM cities WHERE cityId = :cityId")
+    abstract fun delete(cityId: Long)
 }

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="TextAppearance.CityWeather.Title.Collapsed" parent="android:TextAppearance">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="TextAppearance.CityWeather.Title.Expanded" parent="android:TextAppearance">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">45sp</item>
+    </style>
+
+    <style name="WeatherToolbarStyle" parent="Widget.AppCompat.Light.ActionButton.Overflow">
+        <item name="tint">#FFFFFF</item>
+    </style>
+</resources>

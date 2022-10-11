@@ -4,14 +4,15 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.mmd.cityweather.common.domain.model.CityInfoDetail
 
-@Entity(tableName = "Cities")
+@Entity(tableName = "cities")
 data class Cities(
     @PrimaryKey
     val cityId: Long,
     val name: String,
-    val latitude: Float,
-    val longitude: Float,
-    val country: String
+    val latitude: Double,
+    val longitude: Double,
+    val country: String,
+    val isAuto: Boolean = false
 ) {
     companion object {
         fun fromDomain(domainModel: CityInfoDetail): Cities {
@@ -20,12 +21,13 @@ data class Cities(
                 domainModel.name,
                 domainModel.lat,
                 domainModel.lon,
-                domainModel.country
+                domainModel.country,
+                domainModel.isAuto
             )
         }
     }
 
     fun toDomain(): CityInfoDetail {
-        return CityInfoDetail(cityId, name, latitude, longitude, country)
+        return CityInfoDetail(cityId, name, latitude, longitude, country, isAuto)
     }
 }

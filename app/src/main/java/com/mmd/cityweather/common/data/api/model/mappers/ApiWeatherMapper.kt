@@ -5,9 +5,8 @@ import com.mmd.cityweather.common.domain.model.CityCurrentWeatherDetail
 import java.util.*
 import javax.inject.Inject
 
-class ApiWeatherMapper @Inject constructor(
-    private val currentDate: Date
-) : ApiMapper<CurrentWeatherApi, CityCurrentWeatherDetail> {
+class ApiWeatherMapper @Inject constructor() :
+    ApiMapper<CurrentWeatherApi, CityCurrentWeatherDetail> {
     companion object {
         const val CITY_ID_UNKNOWN = -1L
     }
@@ -32,7 +31,7 @@ class ApiWeatherMapper @Inject constructor(
             apiEntity.wind?.speed ?: 0.0,
             apiEntity.wind?.deg ?: 0,
             apiEntity.clouds?.all ?: 0,
-            currentDate
+            Date((apiEntity.dt ?: 0) * 1000L)
         )
     }
 }

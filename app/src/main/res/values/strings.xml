@@ -1,14 +1,21 @@
 <resources>
     <string name="app_name">City Weather</string>
-    <string name="action_settings">Settings</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
-
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="menu_setting">Setting</string>
+    <string name="menu_manage_cities">Cities manage</string>
+    <string name="tv_celsius_unit">°C</string>
+    <string name="tv_open_weather_api">Open weather API</string>
+    <string name="tv_pressure_description">Pressure</string>
+    <string name="tv_visibility_description">Visibility</string>
+    <string name="tv_cloudiness">Cloudiness</string>
+    <string name="tv_wind_speed_description">Wind speed</string>
+    <string name="tv_humidity_description">Humidity</string>
+    <string name="tv_feel_like_degree_description">Feels-like
+        Temperature</string>
+    <string name="btn_weather_chart">Weather chart</string>
+    <string name="tv_temp">%1$s°C</string>
+    <string name="tv_humidity">%1$s\%%</string>
+    <string name="tv_wind_speed">%1$sm/s</string>
+    <string name="tv_pressure">%1$shPa</string>
+    <string name="tv_visibility">%1$sm</string>
+    <string name="tv_weather_detail">Weather detail</string>
 </resources>

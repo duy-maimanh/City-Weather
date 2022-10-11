@@ -8,7 +8,7 @@ interface CityWeatherApi {
 
     @GET(ApiConstants.CURRENT_WEATHER_ENDPOINT)
     suspend fun getCurrentWeather(
-        @Query(ApiParameters.LAT) lat: Float,
-        @Query(ApiParameters.LONG) lon: Float,
+        @Query(ApiParameters.LAT) lat: Double,
+        @Query(ApiParameters.LONG) lon: Double,
     ): CurrentWeatherApi
 }

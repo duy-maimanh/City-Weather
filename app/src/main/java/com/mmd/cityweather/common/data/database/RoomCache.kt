@@ -17,7 +17,7 @@ class RoomCache @Inject constructor(
     }
 
     override fun getCurrentWeather(cityId: Long): Flowable<CachedWeathers> {
-        return weatherDao.getLatestWeather()
+        return weatherDao.getLatestWeather(cityId)
     }
 
     override suspend fun storeCity(city: Cities) {
@@ -26,5 +26,13 @@ class RoomCache @Inject constructor(
 
     override fun getCityInfo(cityId: Long): Flowable<Cities> {
         return cityDao.getInfoCity()
+    }
+
+    override suspend fun cityIsExist(): Boolean {
+        return cityDao.isExists()
+    }
+
+    override suspend fun deleteCityById(cityId: Long) {
+        return cityDao.delete(cityId)
     }
 }

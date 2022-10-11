@@ -6,4 +6,10 @@ import io.reactivex.Flowable
 interface CityRepository {
     fun getCityInformation(cityId: Long): Flowable<CityInfoDetail>
     suspend fun insertCity(city: CityInfoDetail)
+    suspend fun isExist(): Boolean
+    suspend fun getDefaultCity(): CityInfoDetail
+    fun setSelectedCity(cityId: Long)
+    fun getSelectedCityInfo(): Flowable<CityInfoDetail>
+    suspend fun getAllCityInfoOnDisk(): List<CityInfoDetail>
+    suspend fun deleteCityById(cityId: Long)
 }

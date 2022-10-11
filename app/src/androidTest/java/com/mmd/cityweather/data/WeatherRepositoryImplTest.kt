@@ -1,6 +1,7 @@
 package com.mmd.cityweather.data
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import com.mmd.cityweather.common.data.CityRepositoryImpl
 import com.mmd.cityweather.common.data.CurrentWeatherRepositoryImpl
@@ -10,10 +11,12 @@ import com.mmd.cityweather.common.data.database.Cache
 import com.mmd.cityweather.common.data.database.CityWeatherDatabase
 import com.mmd.cityweather.common.data.database.RoomCache
 import com.mmd.cityweather.common.data.di.CacheModule
+import com.mmd.cityweather.common.data.preferences.Preferences
 import com.mmd.cityweather.common.domain.model.CityInfoDetail
 import com.mmd.cityweather.common.domain.repositories.CityRepository
 import com.mmd.cityweather.common.domain.repositories.CurrentWeatherRepository
 import com.mmd.cityweather.data.api.utils.FakeServer
+import com.mmd.cityweather.data.preferences.FakePreferences
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -33,7 +36,6 @@ class WeatherRepositoryImplTest {
     private lateinit var testRepository: CurrentWeatherRepository
     private lateinit var cityRepository: CityRepository
     private lateinit var api: CityWeatherApi
-    private lateinit var cache: Cache
 
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
@@ -50,22 +52,32 @@ class WeatherRepositoryImplTest {
     @Inject
     lateinit var apiWeatherMapper: ApiWeatherMapper
 
+    @Inject
+    lateinit var cache: Cache
+
+    private lateinit var fakePreferences: Preferences
+
     @Before
     fun setup() {
         fakeServer.start()
 
         hiltRule.inject()
 
+        fakePreferences = FakePreferences()
+
         api = retrofitBuilder
             .baseUrl(fakeServer.baseEndpoint)
             .build()
             .create(CityWeatherApi::class.java)
 
-        cache = RoomCache(database.weatherDao(), database.citiesDao())
-
         testRepository =
             CurrentWeatherRepositoryImpl(api, apiWeatherMapper, cache)
-        cityRepository = CityRepositoryImpl(cache)
+
+        cityRepository = CityRepositoryImpl(
+            cache,
+            InstrumentationRegistry.getInstrumentation().context.assets,
+            fakePreferences
+        )
     }
 
     @After
@@ -81,7 +93,7 @@ class WeatherRepositoryImplTest {
 
         // When
         val currentWeather = testRepository.requestNewCurrentWeather(
-            1, 18.00f, 136.00f
+            1, 18.00, 136.00
         )
 
         // Then
@@ -97,8 +109,8 @@ class WeatherRepositoryImplTest {
         val testCity = CityInfoDetail(
             1234567L,
             "Da Nang",
-            16.0f,
-            103.0f,
+            16.0,
+            103.0,
             "VN"
         )
 
@@ -108,7 +120,7 @@ class WeatherRepositoryImplTest {
             fakeServer.setPathDispatcher()
 
             val currentWeather = testRepository.requestNewCurrentWeather(
-                testCity.cityId, 18.00f, 136.00f
+                testCity.cityId, 18.00, 136.00
             )
 
             // When
