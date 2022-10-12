@@ -11,4 +11,10 @@ interface CityWeatherApi {
         @Query(ApiParameters.LAT) lat: Double,
         @Query(ApiParameters.LONG) lon: Double,
     ): CurrentWeatherApi
+
+    @GET(ApiConstants.FORECAST_WEATHER_ENDPOINT)
+    suspend fun getForecastWeather(
+        @Query(ApiParameters.LAT) lat: Double,
+        @Query(ApiParameters.LONG) lon: Double,
+    ): CurrentWeatherApi
 }
