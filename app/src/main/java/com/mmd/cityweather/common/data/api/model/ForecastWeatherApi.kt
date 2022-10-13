@@ -2,7 +2,9 @@ package com.mmd.cityweather.common.data.api.model
 
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class ForecastWeatherApi(
     @Json(name = "cnt")
     val cnt: Int?,
@@ -14,11 +16,12 @@ data class ForecastWeatherApi(
     val message: Int?
 )
 
+@JsonClass(generateAdapter = true)
 data class ForecastApi(
     @Json(name = "clouds")
     val clouds: CloudsApi?,
     @Json(name = "dt")
-    val dt: Int?,
+    val dt: Long?,
     @Json(name = "dt_txt")
     val dtTxt: String?,
     @Json(name = "main")

@@ -20,6 +20,8 @@ class FakeServer {
     private val responsesBasePath = "networkresponses/"
     private val currentWeatherEndpointPath =
         endpointSeparator + ApiConstants.CURRENT_WEATHER_ENDPOINT
+    private val forecastWeatherEndpointPath =
+        endpointSeparator + ApiConstants.FORECAST_WEATHER_ENDPOINT
     private val notFoundResponse = MockResponse().setResponseCode(404)
 
     val baseEndpoint get() = mockServer.url(endpointSeparator)
@@ -38,6 +40,16 @@ class FakeServer {
                         startsWith(currentWeatherEndpointPath) -> {
                             MockResponse().setResponseCode(200)
                                 .setBody(getJson("${responsesBasePath}current_weather.json"))
+                        }
+                        startsWith(forecastWeatherEndpointPath) -> {
+                            MockResponse().setResponseCode(200)
+                                .setBody(
+                                    getJson
+                                        (
+                                        "${responsesBasePath}forecast_weather" +
+                                                ".json"
+                                    )
+                                )
                         }
                         else -> {
                             notFoundResponse
