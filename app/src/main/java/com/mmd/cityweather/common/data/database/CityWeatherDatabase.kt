@@ -6,13 +6,13 @@ import androidx.room.TypeConverters
 import com.mmd.cityweather.common.data.database.converters.DateConverter
 import com.mmd.cityweather.common.data.database.daos.CitiesDao
 import com.mmd.cityweather.common.data.database.daos.WeatherDao
-import com.mmd.cityweather.common.data.database.models.cacheweather.CachedWeathers
+import com.mmd.cityweather.common.data.database.models.cacheweather.CachedCurrentWeathers
 import com.mmd.cityweather.common.data.database.models.cities.Cities
 
 @Database(
     entities = [
         Cities::class,
-        CachedWeathers::class
+        CachedCurrentWeathers::class
     ],
     version = 1
 )
