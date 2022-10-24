@@ -8,6 +8,11 @@ data class ForecastWeatherDetail(
 )
 
 data class ForecastDetail(
-    val temp: Double, val minTemp: Double, val maxTemp: Double, val conditionId: Long,
-    val conditionIcon: String, val conditionDescription: String, val time: Date
+    val temp: Double,
+    val minTemp: Double,
+    val maxTemp: Double,
+    val conditionIcon: String,
+    val conditionDescription: String,
+    val timeOfForeCast: Date,
+    val timeOfUpdate: Date
 )

@@ -15,10 +15,10 @@ class ApiForecastMapper @Inject constructor() : ApiMapper<ForecastWeatherApi,
                 it.main?.temp ?: 0.0,
                 it.main?.tempMin ?: 0.0,
                 it.main?.tempMax ?: 0.0,
-                it.weather?.get(0)?.id?.toLong() ?: 0,
                 it.weather?.get(0)?.icon ?: "",
                 it.weather?.get(0)?.description ?: "",
-                Date((it.dt ?: 0) * 1000L)
+                Date((it.dt ?: 0) * 1000L),
+                Date(System.currentTimeMillis())
             )
         } ?: emptyList())
     }
