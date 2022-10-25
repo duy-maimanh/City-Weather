@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.mmd.cityweather.common.domain.model.CityInfoDetail
 import com.mmd.cityweather.common.presentation.Event
 import com.mmd.cityweather.common.presentation.models.UICurrentWeather
+import com.mmd.cityweather.common.presentation.models.UIForecastWeather
 import com.mmd.cityweather.currentweather.domain.*
 import com.mmd.cityweather.splash.domain.InsertDefaultCity
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -137,11 +138,24 @@ class CurrentWeatherViewModel @Inject constructor(
 
     private fun subscribeToForecastWeather() {
         forecastWeather.invoke(selectedCityInfo.cityId)
+            .map { forecastWeather ->
+                forecastWeather.forecastDetails.map {
+                    UIForecastWeather(
+                        it.timeOfForeCast.toString(),
+                        it.conditionIcon,
+                        it.conditionDescription,
+                        it.minTemp,
+                        it.maxTemp,
+                        it.temp
+                    )
+                }
+            }
             .subscribeOn(Schedulers.computation())
-            .observeOn(AndroidSchedulers.mainThread()).subscribe({
-                Log.d("asdasd", "asdasdasd")
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+
             }, {
-                Log.d("asdsad", "adsasd")
+
             }).addTo(compositeDisposable)
     }
 
