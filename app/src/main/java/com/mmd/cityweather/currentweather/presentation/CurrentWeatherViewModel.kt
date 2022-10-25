@@ -31,7 +31,8 @@ class CurrentWeatherViewModel @Inject constructor(
     private val removeCity: RemoveCity,
     private val insertDefaultCity: InsertDefaultCity,
     private val compositeDisposable: CompositeDisposable,
-    private val getBackgroundForCurrentWeather: GetBackgroundForCurrentWeather
+    private val getBackgroundForCurrentWeather: GetBackgroundForCurrentWeather,
+    private val forecastWeather: ForecastWeather
 ) : ViewModel() {
     private val _state = MutableStateFlow(CurrentWeatherViewState())
     val state: StateFlow<CurrentWeatherViewState> = _state.asStateFlow()
@@ -82,7 +83,14 @@ class CurrentWeatherViewModel @Inject constructor(
         onLoadingStatus(true)
         viewModelScope.launch {
             requestCurrentWeather(
-                selectedCityInfo.cityId, selectedCityInfo.lat, selectedCityInfo.lon
+                selectedCityInfo.cityId,
+                selectedCityInfo.lat,
+                selectedCityInfo.lon
+            )
+            forecastWeather.forecastWeather(
+                selectedCityInfo.cityId,
+                selectedCityInfo.lat,
+                selectedCityInfo.lon
             )
         }
     }
@@ -92,6 +100,7 @@ class CurrentWeatherViewModel @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread()).subscribe({
                 selectedCityInfo = it
                 subscribeToCurrentWeatherUpdates()
+                subscribeToForecastWeather()
                 onHasCityInfo(true)
             }, {
                 onFailure(it)
@@ -123,6 +132,16 @@ class CurrentWeatherViewModel @Inject constructor(
                 onNewWeather(it)
             }, {
                 onFailure(it)
+            }).addTo(compositeDisposable)
+    }
+
+    private fun subscribeToForecastWeather() {
+        forecastWeather.invoke(selectedCityInfo.cityId)
+            .subscribeOn(Schedulers.computation())
+            .observeOn(AndroidSchedulers.mainThread()).subscribe({
+                Log.d("asdasd", "asdasdasd")
+            }, {
+                Log.d("asdsad", "adsasd")
             }).addTo(compositeDisposable)
     }
 

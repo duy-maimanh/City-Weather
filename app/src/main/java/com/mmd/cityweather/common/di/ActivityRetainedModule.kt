@@ -2,8 +2,10 @@ package com.mmd.cityweather.common.di
 
 import com.mmd.cityweather.common.data.CityRepositoryImpl
 import com.mmd.cityweather.common.data.CurrentWeatherRepositoryImpl
+import com.mmd.cityweather.common.data.ForecastWeatherRepositoryImpl
 import com.mmd.cityweather.common.domain.repositories.CityRepository
 import com.mmd.cityweather.common.domain.repositories.CurrentWeatherRepository
+import com.mmd.cityweather.common.domain.repositories.ForecastWeatherRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -27,6 +29,12 @@ abstract class ActivityRetainedModule {
     abstract fun bindCityRepository(
         repositoryImpl: CityRepositoryImpl
     ): CityRepository
+
+    @Binds
+    @ActivityRetainedScoped
+    abstract fun bindForecastWeatherRepository(
+        repositoryImpl: ForecastWeatherRepositoryImpl
+    ): ForecastWeatherRepository
 
     companion object {
         @Provides
