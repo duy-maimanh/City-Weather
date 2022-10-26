@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.mmd.cityweather.R
 import com.mmd.cityweather.common.presentation.models.UIForecastWeather
 import com.mmd.cityweather.databinding.ItemForecastWeatherBinding
 
@@ -25,12 +26,17 @@ class ForecastWeatherAdapter :
         fun bind(weather: UIForecastWeather) {
             val dateId = weather.getMinimizeDisplayDate()
             binding.forecastDate.text = if (dateId != null) {
-                binding.root.resources.getString(dateId)
+                "${binding.root.resources.getString(dateId)} ${weather.getHoursOfForeCast()}"
             } else {
                 weather.getFullDisplayDate()
             }
-            binding.forecastDescription.text = weather.weatherDescription
-            binding.forecastTemp.text = weather.temp.toString()
+            binding.forecastDescription.text =
+                weather.weatherDescription.replaceFirstChar { it.titlecase() }
+            binding.forecastTemp.text = String.format(
+                binding.root.resources.getString(R.string.tv_forecast_temp),
+                weather.minTemp.toInt(),
+                weather.maxTemp.toInt()
+            )
         }
     }
 

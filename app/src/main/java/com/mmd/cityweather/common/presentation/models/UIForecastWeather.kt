@@ -30,9 +30,13 @@ class UIForecastWeather(
         }
     }
 
+    fun getHoursOfForeCast(): String {
+        val dateFormat = SimpleDateFormat("HH:mm")
+        return dateFormat.format(date)
+    }
+
     fun getFullDisplayDate(): String {
-        val dateFormat = SimpleDateFormat("dd/MM/yyyy/ hh:mm")
-        val strDate: String = dateFormat.format(date)
-        return strDate
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy/ HH:mm")
+        return dateFormat.format(date)
     }
 }

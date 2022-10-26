@@ -151,7 +151,7 @@ class CurrentWeatherViewModel @Inject constructor(
                         it.maxTemp,
                         it.temp
                     )
-                }
+                }.take(6)
             }
             .subscribeOn(Schedulers.computation())
             .observeOn(AndroidSchedulers.mainThread())
