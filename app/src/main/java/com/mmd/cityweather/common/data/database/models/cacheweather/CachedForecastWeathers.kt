@@ -31,7 +31,9 @@ data class CachedForecastWeathers(
 
     companion object {
 
-        fun fromDomain(cityId: Long, domainModel: ForecastDetail): CachedForecastWeathers {
+        fun fromDomain(
+            cityId: Long, domainModel: ForecastDetail
+        ): CachedForecastWeathers {
             return CachedForecastWeathers(
                 cityId,
                 domainModel.timeOfForeCast,
@@ -47,7 +49,13 @@ data class CachedForecastWeathers(
 
     fun toDomain(): ForecastDetail {
         return ForecastDetail(
-            temp, tempMin, tempMax, icon, description, timeOfForecasted, timeOfUpdate
+            temp,
+            tempMin,
+            tempMax,
+            icon,
+            description,
+            timeOfForecasted,
+            timeOfUpdate
         )
     }
 }

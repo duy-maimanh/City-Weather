@@ -1,9 +1,11 @@
 package com.mmd.cityweather.currentweather.presentation
 
 import android.os.SystemClock
+import android.text.format.DateUtils
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mmd.cityweather.R
 import com.mmd.cityweather.common.domain.model.CityInfoDetail
 import com.mmd.cityweather.common.presentation.Event
 import com.mmd.cityweather.common.presentation.models.UICurrentWeather
@@ -20,6 +22,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
 
@@ -141,7 +144,7 @@ class CurrentWeatherViewModel @Inject constructor(
             .map { forecastWeather ->
                 forecastWeather.forecastDetails.map {
                     UIForecastWeather(
-                        it.timeOfForeCast.toString(),
+                        it.timeOfForeCast,
                         it.conditionIcon,
                         it.conditionDescription,
                         it.minTemp,
@@ -153,9 +156,9 @@ class CurrentWeatherViewModel @Inject constructor(
             .subscribeOn(Schedulers.computation())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-
+                onNewForecastWeather(it)
             }, {
-
+                onFailure(it)
             }).addTo(compositeDisposable)
     }
 
@@ -176,6 +179,12 @@ class CurrentWeatherViewModel @Inject constructor(
     private fun onNewWeather(weather: UICurrentWeather) {
         _state.update { oldState ->
             oldState.copy(loading = false, weather = weather)
+        }
+    }
+
+    private fun onNewForecastWeather(forecastWeather: List<UIForecastWeather>) {
+        _state.update { oldState ->
+            oldState.copy(loading = false, forecastWeather = forecastWeather)
         }
     }
 

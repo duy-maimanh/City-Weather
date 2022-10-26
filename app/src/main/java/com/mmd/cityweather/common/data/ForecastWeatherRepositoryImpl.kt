@@ -31,8 +31,7 @@ class ForecastWeatherRepositoryImpl @Inject constructor(
     override suspend fun storeForecastWeather(forecastWeatherDetail: ForecastWeatherDetail) {
         cache.storeForecastWeather(forecastWeatherDetail.forecastDetails.map {
             CachedForecastWeathers.fromDomain(
-                forecastWeatherDetail.cityId,
-                it
+                forecastWeatherDetail.cityId, it
             )
         })
     }
