@@ -119,11 +119,12 @@
                     android:orientation="vertical"
                     app:layout_constraintTop_toBottomOf="@id/view_today_weather_line" />
 
-                <Button
-                    android:id="@+id/btn_weather_chart"
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_forecast_detail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
+                    android:background="@drawable/bg_forecast_detail"
                     android:text="@string/btn_weather_chart"
                     app:layout_constraintTop_toBottomOf="@+id/ln_forecast" />
 
@@ -136,7 +137,7 @@
                     android:textSize="12sp"
                     android:textStyle="bold"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/btn_weather_chart" />
+                    app:layout_constraintTop_toBottomOf="@+id/btn_forecast_detail" />
 
                 <!--            Weather detail-->
                 <TextView

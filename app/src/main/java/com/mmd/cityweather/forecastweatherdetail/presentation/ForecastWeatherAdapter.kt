@@ -1,4 +1,4 @@
-package com.mmd.cityweather.currentweather.presentation
+package com.mmd.cityweather.forecastweatherdetail.presentation
 
 import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable

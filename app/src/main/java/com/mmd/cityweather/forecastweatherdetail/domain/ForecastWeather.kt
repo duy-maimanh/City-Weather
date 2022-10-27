@@ -1,4 +1,4 @@
-package com.mmd.cityweather.currentweather.domain
+package com.mmd.cityweather.forecastweatherdetail.domain
 
 import com.mmd.cityweather.common.domain.model.ForecastWeatherDetail
 import com.mmd.cityweather.common.domain.repositories.ForecastWeatherRepository

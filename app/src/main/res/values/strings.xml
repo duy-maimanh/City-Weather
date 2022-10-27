@@ -11,7 +11,7 @@
     <string name="tv_humidity_description">Humidity</string>
     <string name="tv_feel_like_degree_description">Feels-like
         Temperature</string>
-    <string name="btn_weather_chart">Weather chart</string>
+    <string name="btn_weather_chart">Forecast detail</string>
     <string name="tv_temp">%1$s°C</string>
     <string name="tv_humidity">%1$s\%%</string>
     <string name="tv_wind_speed">%1$sm/s</string>
@@ -21,4 +21,5 @@
     <string name="tv_forecast_temp">%1$s/%2$s°C</string>
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
+    <string name="something_wrong">Something wrong</string>
 </resources>

@@ -20,6 +20,13 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:popUpTo="@id/currentWeatherFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_currentWeatherFragment_to_forecastWeatherDetailFragment"
+            app:destination="@id/forecastWeatherDetailFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
 
     </fragment>
 
@@ -34,5 +41,13 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:popUpTo="@id/splashFragment"
             app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/forecastWeatherDetailFragment"
+        android:name="com.mmd.cityweather.forecastweatherdetail.presentation.ForecastWeatherDetailFragment"
+        android:label="ForecastWeatherDetailFragment" >
+        <argument
+            android:name="cityId"
+            app:argType="long" />
     </fragment>
 </navigation>

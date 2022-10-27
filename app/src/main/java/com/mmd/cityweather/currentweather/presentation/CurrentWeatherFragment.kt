@@ -24,7 +24,9 @@ import com.mmd.cityweather.R
 import com.mmd.cityweather.common.presentation.Event
 import com.mmd.cityweather.common.presentation.models.UICurrentWeather
 import com.mmd.cityweather.common.presentation.models.UIForecastWeather
+import com.mmd.cityweather.currentweather.domain.model.CityId
 import com.mmd.cityweather.databinding.FragmentCurrentWeatherBinding
+import com.mmd.cityweather.forecastweatherdetail.presentation.ForecastWeatherAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -161,6 +163,10 @@ class CurrentWeatherFragment : Fragment() {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(requireContext())
         }
+
+        binding.btnForecastDetail.setOnClickListener {
+            viewModel.onEven(CurrentWeatherEvent.OpenForecastDetail)
+        }
     }
 
     private fun requestInitCurrentWeather() {
@@ -184,6 +190,14 @@ class CurrentWeatherFragment : Fragment() {
         handleRequestNewCurrentWeather(state.hasCityInfo, state.isFirstInit)
         updateLoadingStatus(state.loading)
         handleMoveToCorrectLocation(state.moveToCorrectLocation)
+        handleOpenForecastWeatherDetail(state.openForecastDetail)
+    }
+
+    private fun handleOpenForecastWeatherDetail(cityIds: List<CityId>) {
+        cityIds.firstOrNull()?.let {
+            openForecastWeatherDetail(it.cityId)
+            viewModel.forecastWeatherDetailOpened(it.id)
+        }
     }
 
     private fun handleMoveToCorrectLocation(status: Boolean) {
@@ -259,5 +273,11 @@ class CurrentWeatherFragment : Fragment() {
             Snackbar.make(requireView(), snackbarMessage, Snackbar.LENGTH_SHORT)
                 .show()
         }
+    }
+
+    private fun openForecastWeatherDetail(cityId: Long) {
+        val action = CurrentWeatherFragmentDirections
+            .actionCurrentWeatherFragmentToForecastWeatherDetailFragment(cityId)
+        findNavController().navigate(action)
     }
 }
