@@ -5,7 +5,9 @@ object ApiConstants {
     const val API_KEY = "b770acc1fd179fe7756e31362dc31533"
     const val CURRENT_WEATHER_ENDPOINT = "weather"
     const val FORECAST_WEATHER_ENDPOINT = "forecast"
-    const val DEFAULT_UNIT ="metric"
+    const val DEFAULT_UNIT = "metric"
+    const val BASE_IMAGE_URL = "http://openweathermap.org/img/wn/"
+    const val IMAGE_SUFFIX = "@2x.png"
 }
 
 object ApiParameters {

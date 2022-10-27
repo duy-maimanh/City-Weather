@@ -1,11 +1,15 @@
 package com.mmd.cityweather.currentweather.presentation
 
 import android.annotation.SuppressLint
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.mmd.cityweather.R
+import com.mmd.cityweather.common.data.api.ApiConstants
 import com.mmd.cityweather.common.presentation.models.UIForecastWeather
 import com.mmd.cityweather.databinding.ItemForecastWeatherBinding
 
@@ -37,6 +41,30 @@ class ForecastWeatherAdapter :
                 weather.minTemp.toInt(),
                 weather.maxTemp.toInt()
             )
+            Glide.with(binding.root).load(
+                "${
+                    ApiConstants
+                        .BASE_IMAGE_URL
+                }${weather.icon}${ApiConstants.IMAGE_SUFFIX}"
+            ).into(object : CustomTarget<Drawable>(100, 100) {
+                override fun onResourceReady(
+                    resource: Drawable,
+                    transition: Transition<in Drawable>?
+                ) {
+                    binding.forecastDescription
+                        .setCompoundDrawablesWithIntrinsicBounds(
+                            resource, null, null, null
+                        )
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {
+                    binding.forecastDescription
+                        .setCompoundDrawablesWithIntrinsicBounds(
+                            placeholder, null, null, null
+                        )
+                }
+
+            })
         }
     }
 
