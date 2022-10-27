@@ -1,12 +1,15 @@
 package com.mmd.cityweather.currentweather.presentation
 
 import android.os.SystemClock
+import android.text.format.DateUtils
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mmd.cityweather.R
 import com.mmd.cityweather.common.domain.model.CityInfoDetail
 import com.mmd.cityweather.common.presentation.Event
 import com.mmd.cityweather.common.presentation.models.UICurrentWeather
+import com.mmd.cityweather.common.presentation.models.UIForecastWeather
 import com.mmd.cityweather.currentweather.domain.*
 import com.mmd.cityweather.splash.domain.InsertDefaultCity
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,6 +22,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
 
@@ -31,7 +35,8 @@ class CurrentWeatherViewModel @Inject constructor(
     private val removeCity: RemoveCity,
     private val insertDefaultCity: InsertDefaultCity,
     private val compositeDisposable: CompositeDisposable,
-    private val getBackgroundForCurrentWeather: GetBackgroundForCurrentWeather
+    private val getBackgroundForCurrentWeather: GetBackgroundForCurrentWeather,
+    private val forecastWeather: ForecastWeather
 ) : ViewModel() {
     private val _state = MutableStateFlow(CurrentWeatherViewState())
     val state: StateFlow<CurrentWeatherViewState> = _state.asStateFlow()
@@ -82,7 +87,14 @@ class CurrentWeatherViewModel @Inject constructor(
         onLoadingStatus(true)
         viewModelScope.launch {
             requestCurrentWeather(
-                selectedCityInfo.cityId, selectedCityInfo.lat, selectedCityInfo.lon
+                selectedCityInfo.cityId,
+                selectedCityInfo.lat,
+                selectedCityInfo.lon
+            )
+            forecastWeather.forecastWeather(
+                selectedCityInfo.cityId,
+                selectedCityInfo.lat,
+                selectedCityInfo.lon
             )
         }
     }
@@ -92,6 +104,7 @@ class CurrentWeatherViewModel @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread()).subscribe({
                 selectedCityInfo = it
                 subscribeToCurrentWeatherUpdates()
+                subscribeToForecastWeather()
                 onHasCityInfo(true)
             }, {
                 onFailure(it)
@@ -126,6 +139,29 @@ class CurrentWeatherViewModel @Inject constructor(
             }).addTo(compositeDisposable)
     }
 
+    private fun subscribeToForecastWeather() {
+        forecastWeather.invoke(selectedCityInfo.cityId)
+            .map { forecastWeather ->
+                forecastWeather.forecastDetails.map {
+                    UIForecastWeather(
+                        it.timeOfForeCast,
+                        it.conditionIcon,
+                        it.conditionDescription,
+                        it.minTemp,
+                        it.maxTemp,
+                        it.temp
+                    )
+                }.take(6)
+            }
+            .subscribeOn(Schedulers.computation())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                onNewForecastWeather(it)
+            }, {
+                onFailure(it)
+            }).addTo(compositeDisposable)
+    }
+
     private fun onLoadingStatus(
         loadingStatus: Boolean, isFirstInit: Boolean = false
     ) {
@@ -143,6 +179,12 @@ class CurrentWeatherViewModel @Inject constructor(
     private fun onNewWeather(weather: UICurrentWeather) {
         _state.update { oldState ->
             oldState.copy(loading = false, weather = weather)
+        }
+    }
+
+    private fun onNewForecastWeather(forecastWeather: List<UIForecastWeather>) {
+        _state.update { oldState ->
+            oldState.copy(loading = false, forecastWeather = forecastWeather)
         }
     }
 

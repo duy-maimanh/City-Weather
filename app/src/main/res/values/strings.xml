@@ -18,4 +18,7 @@
     <string name="tv_pressure">%1$shPa</string>
     <string name="tv_visibility">%1$sm</string>
     <string name="tv_weather_detail">Weather detail</string>
+    <string name="tv_forecast_temp">%1$s/%2$s°C</string>
+    <string name="today">Today</string>
+    <string name="tomorrow">Tomorrow</string>
 </resources>

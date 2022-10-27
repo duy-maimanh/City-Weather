@@ -9,7 +9,7 @@ import com.mmd.cityweather.common.domain.model.CityCurrentWeatherDetail
 import java.util.Date
 
 @Entity(
-    tableName = "cached_weathers", foreignKeys = [
+    tableName = "cached_current_weathers", foreignKeys = [
         ForeignKey(
             entity = Cities::class,
             parentColumns = ["cityId"],
@@ -19,7 +19,7 @@ import java.util.Date
     ],
     indices = [Index("cityId")]
 )
-class CachedWeathers(
+class CachedCurrentWeathers(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0,
     var cityId: Long,
@@ -41,8 +41,8 @@ class CachedWeathers(
 ) {
     companion object {
 
-        fun fromDomain(domainModel: CityCurrentWeatherDetail): CachedWeathers {
-            return CachedWeathers(
+        fun fromDomain(domainModel: CityCurrentWeatherDetail): CachedCurrentWeathers {
+            return CachedCurrentWeathers(
                 cityId = domainModel.cityId,
                 conditionId = domainModel.conditionId,
                 conditionName = domainModel.conditionName,

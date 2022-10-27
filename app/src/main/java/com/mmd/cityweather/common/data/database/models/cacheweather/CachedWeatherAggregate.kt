@@ -12,5 +12,5 @@ class CachedWeatherAggregate (
         parentColumn = "cityId",
         entityColumn = "cityId"
     )
-    val weathers: List<CachedWeathers>
+    val weathers: List<CachedCurrentWeathers>
 )

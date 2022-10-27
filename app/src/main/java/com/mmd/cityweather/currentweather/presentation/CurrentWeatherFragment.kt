@@ -16,12 +16,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.*
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.mmd.cityweather.R
 import com.mmd.cityweather.common.presentation.Event
 import com.mmd.cityweather.common.presentation.models.UICurrentWeather
+import com.mmd.cityweather.common.presentation.models.UIForecastWeather
 import com.mmd.cityweather.databinding.FragmentCurrentWeatherBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -33,6 +35,7 @@ class CurrentWeatherFragment : Fragment() {
     private lateinit var binding: FragmentCurrentWeatherBinding
     private val viewModel: CurrentWeatherViewModel by viewModels()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var forecastWeatherAdapter: ForecastWeatherAdapter
 
     // only work if the device have google play
     private val locationPermissionRequest =
@@ -42,39 +45,41 @@ class CurrentWeatherFragment : Fragment() {
                 fusedLocationClient.lastLocation.addOnSuccessListener { location ->
                     if (location != null) {
                         viewModel.onEven(
-                            CurrentWeatherEvent.ChangeNewLocation
-                                (location.latitude, location.longitude)
+                            CurrentWeatherEvent.ChangeNewLocation(
+                                location.latitude, location.longitude
+                            )
                         )
                     } else {
-                        val locationRequest: LocationRequest = LocationRequest()
-                            .setPriority(
+                        val locationRequest: LocationRequest =
+                            LocationRequest().setPriority(
                                 LocationRequest.PRIORITY_LOW_POWER
-                            )
-                            .setInterval(10000)
-                            .setFastestInterval(
+                            ).setInterval(10000).setFastestInterval(
                                 1000
-                            )
-                            .setNumUpdates(1)
+                            ).setNumUpdates(1)
 
 
                         // Initialize location call back
-                        val locationCallback: LocationCallback = object : LocationCallback() {
-                            override fun onLocationResult(
-                                locationResult: LocationResult
-                            ) {
-                                // Initialize
-                                // location
-                                val location1: Location = locationResult
-                                    .lastLocation ?: return
-                                viewModel.onEven(
-                                    CurrentWeatherEvent.ChangeNewLocation
-                                        (location1.latitude, location1.longitude)
-                                )
+                        val locationCallback: LocationCallback =
+                            object : LocationCallback() {
+                                override fun onLocationResult(
+                                    locationResult: LocationResult
+                                ) {
+                                    // Initialize
+                                    // location
+                                    val location1: Location =
+                                        locationResult.lastLocation ?: return
+                                    viewModel.onEven(
+                                        CurrentWeatherEvent.ChangeNewLocation(
+                                            location1.latitude,
+                                            location1.longitude
+                                        )
+                                    )
+                                }
                             }
-                        }
                         // Request location updates
-                        fusedLocationClient.requestLocationUpdates(locationRequest,locationCallback,
-                            Looper.myLooper())
+                        fusedLocationClient.requestLocationUpdates(
+                            locationRequest, locationCallback, Looper.myLooper()
+                        )
                     }
                 }.addOnFailureListener { exception ->
 
@@ -149,6 +154,13 @@ class CurrentWeatherFragment : Fragment() {
         binding.swipeLayout.setOnRefreshListener {
             viewModel.onEven(CurrentWeatherEvent.RequestRecentCurrentWeather)
         }
+
+        forecastWeatherAdapter = ForecastWeatherAdapter()
+        with(binding.lnForecast) {
+            adapter = forecastWeatherAdapter
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(requireContext())
+        }
     }
 
     private fun requestInitCurrentWeather() {
@@ -167,6 +179,7 @@ class CurrentWeatherFragment : Fragment() {
 
     private fun updateScreenState(state: CurrentWeatherViewState) {
         updateDataToUI(state.weather)
+        updateForecastWeatherToUI(state.forecastWeather)
         handleFailures(state.failure)
         handleRequestNewCurrentWeather(state.hasCityInfo, state.isFirstInit)
         updateLoadingStatus(state.loading)
@@ -190,6 +203,13 @@ class CurrentWeatherFragment : Fragment() {
         if (hasCityInfo && isFirstInit) {
             requestInitCurrentWeather()
         }
+    }
+
+    private fun updateForecastWeatherToUI(
+        forecastWeather: List<UIForecastWeather>?
+    ) {
+        if (forecastWeather == null) return
+        forecastWeatherAdapter.updateForecastWeather(forecastWeather)
     }
 
     private fun updateDataToUI(uiCurrentWeather: UICurrentWeather?) {
