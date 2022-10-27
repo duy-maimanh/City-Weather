@@ -1,16 +1,16 @@
 package com.mmd.cityweather.currentweather.presentation
 
 import android.os.SystemClock
-import android.text.format.DateUtils
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mmd.cityweather.R
 import com.mmd.cityweather.common.domain.model.CityInfoDetail
 import com.mmd.cityweather.common.presentation.Event
 import com.mmd.cityweather.common.presentation.models.UICurrentWeather
 import com.mmd.cityweather.common.presentation.models.UIForecastWeather
 import com.mmd.cityweather.currentweather.domain.*
+import com.mmd.cityweather.currentweather.domain.model.CityId
+import com.mmd.cityweather.forecastweatherdetail.domain.ForecastWeather
 import com.mmd.cityweather.splash.domain.InsertDefaultCity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
 
@@ -56,6 +55,9 @@ class CurrentWeatherViewModel @Inject constructor(
             }
             is CurrentWeatherEvent.ChangeNewLocation -> {
                 getCityInfoByLocation(event.lat, event.log)
+            }
+            is CurrentWeatherEvent.OpenForecastDetail -> {
+                onOpenForecastWeatherDetail()
             }
         }
     }
@@ -185,6 +187,22 @@ class CurrentWeatherViewModel @Inject constructor(
     private fun onNewForecastWeather(forecastWeather: List<UIForecastWeather>) {
         _state.update { oldState ->
             oldState.copy(loading = false, forecastWeather = forecastWeather)
+        }
+    }
+
+    private fun onOpenForecastWeatherDetail() {
+        _state.update { oldState ->
+            val cityIds = oldState.openForecastDetail + CityId(
+                UUID.randomUUID().mostSignificantBits, selectedCityInfo.cityId
+            )
+            oldState.copy(openForecastDetail = cityIds)
+        }
+    }
+
+    fun forecastWeatherDetailOpened(id: Long) {
+        _state.update { oldState ->
+            val cityIds = oldState.openForecastDetail.filterNot { it.id == id }
+            oldState.copy(openForecastDetail = cityIds)
         }
     }
 

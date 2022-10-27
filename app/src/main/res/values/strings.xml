@@ -21,4 +21,5 @@
     <string name="tv_forecast_temp">%1$s/%2$s°C</string>
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
+    <string name="something_wrong">Something wrong</string>
 </resources>
