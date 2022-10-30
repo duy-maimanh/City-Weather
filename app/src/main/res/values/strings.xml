@@ -2,6 +2,7 @@
     <string name="app_name">City Weather</string>
     <string name="menu_setting">Setting</string>
     <string name="menu_manage_cities">Cities manage</string>
+    <string name="menu_edit">Edit</string>
     <string name="tv_celsius_unit">°C</string>
     <string name="tv_open_weather_api">Open weather API</string>
     <string name="tv_pressure_description">Pressure</string>
