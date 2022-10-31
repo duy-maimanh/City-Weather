@@ -10,19 +10,17 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mmd.cityweather.R
-import com.mmd.cityweather.databinding.FragmentCitiesManageBinding
+import com.mmd.cityweather.databinding.FragmentCityManagementBinding
 
 class CityManagementFragment : Fragment() {
-    private lateinit var binding: FragmentCitiesManageBinding
+    private lateinit var binding: FragmentCityManagementBinding
     private lateinit var citiesAdapter: CityManagementAdapter
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        binding = FragmentCitiesManageBinding.inflate(
+        binding = FragmentCityManagementBinding.inflate(
             inflater, container, false
         )
         return binding.root
@@ -34,8 +32,7 @@ class CityManagementFragment : Fragment() {
     }
 
     private fun initView() {
-        val statusBarHeightId =
-            resources.getIdentifier("status_bar_height", "dimen", "android")
+        val statusBarHeightId = resources.getIdentifier("status_bar_height", "dimen", "android")
         val statusBarHeight = resources.getDimensionPixelSize(statusBarHeightId)
         (binding.toolbarManageCities.layoutParams as? ViewGroup.MarginLayoutParams)?.topMargin =
             statusBarHeight
@@ -47,6 +44,7 @@ class CityManagementFragment : Fragment() {
             when (it.itemId) {
                 R.id.menuEdit -> {
                     citiesAdapter.editEnable(true)
+                    showDeleteButton(true)
                     return@setOnMenuItemClickListener true
                 }
             }
@@ -54,12 +52,10 @@ class CityManagementFragment : Fragment() {
         }
         citiesAdapter = CityManagementAdapter()
         val decoration = DividerItemDecoration(
-            requireContext(),
-            DividerItemDecoration.VERTICAL
+            requireContext(), DividerItemDecoration.VERTICAL
         )
         ContextCompat.getDrawable(
-            requireContext(),
-            R.drawable.manage_cities_divider
+            requireContext(), R.drawable.manage_cities_divider
         )?.let {
             decoration.setDrawable(it)
         }
@@ -69,5 +65,9 @@ class CityManagementFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
             addItemDecoration(decoration)
         }
+    }
+
+    private fun showDeleteButton(isShow: Boolean) {
+        binding.btnDeleteCity.visibility = if (isShow) View.VISIBLE else View.GONE
     }
 }
