@@ -1,4 +1,4 @@
-package com.mmd.cityweather.citiesmanage.presentation
+package com.mmd.cityweather.citymanagement.presentation
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,12 +10,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mmd.cityweather.R
-import com.mmd.cityweather.common.MainActivity
 import com.mmd.cityweather.databinding.FragmentCitiesManageBinding
 
-class CitiesManageFragment : Fragment() {
+class CityManagementFragment : Fragment() {
     private lateinit var binding: FragmentCitiesManageBinding
-    private lateinit var citiesAdapter: CitiesManageAdapter
+    private lateinit var citiesAdapter: CityManagementAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,7 +43,16 @@ class CitiesManageFragment : Fragment() {
         binding.toolbarManageCities.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
-        citiesAdapter = CitiesManageAdapter()
+        binding.toolbarManageCities.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.menuEdit -> {
+                    citiesAdapter.editEnable(true)
+                    return@setOnMenuItemClickListener true
+                }
+            }
+            false
+        }
+        citiesAdapter = CityManagementAdapter()
         val decoration = DividerItemDecoration(
             requireContext(),
             DividerItemDecoration.VERTICAL

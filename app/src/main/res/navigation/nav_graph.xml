@@ -59,6 +59,6 @@
     </fragment>
     <fragment
         android:id="@+id/citiesManageFragment"
-        android:name="com.mmd.cityweather.citiesmanage.presentation.CitiesManageFragment"
+        android:name="com.mmd.cityweather.citymanagement.presentation.CityManagementFragment"
         android:label="CitiesManageFragment" />
 </navigation>
