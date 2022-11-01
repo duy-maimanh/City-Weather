@@ -114,6 +114,12 @@ class CityRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun deleteCityById(idList: List<Long>) {
+        withContext(Dispatchers.IO){
+            cache.deleteCityById(idList)
+        }
+    }
+
     override fun getAllCityInDatabase(): Flowable<List<CityInfoDetail>> {
         return cache.getAllCity().map { it.map { city -> city.toDomain() } }
     }

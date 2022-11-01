@@ -1,9 +1,10 @@
 package com.mmd.cityweather.citymanagement.presentation
 
 import androidx.lifecycle.ViewModel
-import com.mmd.cityweather.citymanagement.domain.model.GetListCity
+import androidx.lifecycle.viewModelScope
+import com.mmd.cityweather.citymanagement.domain.DeleteCityById
+import com.mmd.cityweather.citymanagement.domain.GetListCity
 import com.mmd.cityweather.citymanagement.domain.model.UICity
-import com.mmd.cityweather.currentweather.presentation.CurrentWeatherViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -13,11 +14,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CityManagementViewModel @Inject constructor(
     private val getListCity: GetListCity,
+    private val deleteCityById: DeleteCityById,
     private val compositeDisposable: CompositeDisposable
 ) : ViewModel() {
     private val _state = MutableStateFlow(CityManagementViewState())
@@ -35,6 +38,25 @@ class CityManagementViewModel @Inject constructor(
 
             })
             .addTo(compositeDisposable)
+    }
+
+    private fun onEvent(event: CityManagementEvent) {
+        when (event) {
+            CityManagementEvent.AddCity -> {
+
+            }
+            CityManagementEvent.DeleteCity -> {
+                deletedCity()
+            }
+        }
+    }
+
+    private fun deletedCity() {
+        _state.value.cities.map { it.id }.let { idList ->
+            viewModelScope.launch {
+                deleteCityById.invoke(idList)
+            }
+        }
     }
 
     private fun onUpdateCity(listCity: List<UICity>) {

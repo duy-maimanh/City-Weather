@@ -1,4 +1,4 @@
-package com.mmd.cityweather.citymanagement.domain.model
+package com.mmd.cityweather.citymanagement.domain
 
 import com.mmd.cityweather.common.domain.model.CityInfoDetail
 import com.mmd.cityweather.common.domain.repositories.CityRepository

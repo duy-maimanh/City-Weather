@@ -37,6 +37,10 @@ class RoomCache @Inject constructor(
         return cityDao.delete(cityId)
     }
 
+    override suspend fun deleteCityById(idList: List<Long>) {
+        return cityDao.deleteCity(idList)
+    }
+
     override suspend fun storeForecastWeather(forecastWeathers: List<CachedForecastWeathers>) {
         weatherDao.insertForecastWeather(forecastWeathers)
     }
