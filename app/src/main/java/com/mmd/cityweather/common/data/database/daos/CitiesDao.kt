@@ -20,4 +20,8 @@ abstract class CitiesDao {
     @Transaction
     @Query("DELETE FROM cities WHERE cityId = :cityId")
     abstract fun delete(cityId: Long)
+
+    @Transaction
+    @Query("SELECT * FROM cities")
+    abstract fun getAllCity(): Flowable<List<Cities>>
 }

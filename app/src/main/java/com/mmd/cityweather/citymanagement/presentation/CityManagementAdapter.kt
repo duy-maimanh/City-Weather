@@ -4,20 +4,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.mmd.cityweather.citymanagement.domain.model.UICity
 import com.mmd.cityweather.databinding.ItemManageCityBinding
 
 class CityManagementAdapter :
     RecyclerView.Adapter<CityManagementAdapter.CitiesManageViewHolder>() {
     private var isEditMode = false
+    private var cities = emptyList<UICity>()
 
     inner class CitiesManageViewHolder(
         private val binding: ItemManageCityBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind() {
+        fun bind(city: UICity) {
             binding.checkboxRemoveCity.visibility =
                 if (isEditMode) View.VISIBLE else View.GONE
+            binding.tvCityName.text = city.name
         }
     }
+
+    fun updateListCity(cities: List<UICity>) {
+        this.cities = cities
+        notifyDataSetChanged()
+    }
+
 
     fun editEnable(enable: Boolean) {
         isEditMode = true
@@ -40,10 +49,10 @@ class CityManagementAdapter :
         holder: CitiesManageViewHolder,
         position: Int
     ) {
-        holder.bind()
+        holder.bind(cities[position])
     }
 
     override fun getItemCount(): Int {
-        return 10
+        return cities.size
     }
 }

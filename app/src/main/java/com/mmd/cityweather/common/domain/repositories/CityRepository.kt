@@ -12,4 +12,5 @@ interface CityRepository {
     fun getSelectedCityInfo(): Flowable<CityInfoDetail>
     suspend fun getAllCityInfoOnDisk(): List<CityInfoDetail>
     suspend fun deleteCityById(cityId: Long)
+    fun getAllCityInDatabase(): Flowable<List<CityInfoDetail>>
 }
