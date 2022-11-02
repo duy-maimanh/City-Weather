@@ -71,7 +71,9 @@ class AddCityBottomSheet : BottomSheetDialogFragment() {
             binding.chipCities.addView(chip)
         }
         binding.chipCities.setOnCheckedStateChangeListener { _, checkedIds ->
-            viewModel.onEvent(AddCityBottomSheetEvent.AddCity(checkedIds))
+            if (checkedIds.isNotEmpty()) {
+                viewModel.onEvent(AddCityBottomSheetEvent.AddCity(checkedIds[0]))
+            }
         }
     }
 }

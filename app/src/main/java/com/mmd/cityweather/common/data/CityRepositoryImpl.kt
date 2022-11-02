@@ -139,4 +139,8 @@ class CityRepositoryImpl @Inject constructor(
             1704949870
         )
     }
+
+    override suspend fun getAllCityIdInDatabase(): List<Long> {
+       return cache.getAllCityIdInDatabase()
+    }
 }

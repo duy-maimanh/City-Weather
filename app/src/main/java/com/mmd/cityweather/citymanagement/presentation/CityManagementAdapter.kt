@@ -29,7 +29,7 @@ class CityManagementAdapter :
 
 
     fun editEnable(enable: Boolean) {
-        isEditMode = true
+        isEditMode = enable
         notifyDataSetChanged()
     }
 

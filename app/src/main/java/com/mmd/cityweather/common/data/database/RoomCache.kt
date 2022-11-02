@@ -52,4 +52,8 @@ class RoomCache @Inject constructor(
     override fun getAllCity(): Flowable<List<Cities>> {
         return cityDao.getAllCity()
     }
+
+    override suspend fun getAllCityIdInDatabase(): List<Long> {
+        return cityDao.getAllCityId()
+    }
 }

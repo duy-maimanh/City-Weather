@@ -28,4 +28,8 @@ abstract class CitiesDao {
     @Transaction
     @Query("DELETE FROM cities WHERE cityId in (:idList)")
     abstract fun deleteCity(idList: List<Long>)
+
+    @Transaction
+    @Query("SELECT cityId FROM cities")
+    abstract fun getAllCityId(): List<Long>
 }
