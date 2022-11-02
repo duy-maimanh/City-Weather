@@ -6,5 +6,6 @@ data class CityInfoDetail(
     val lat: Double,
     val lon: Double,
     val country: String,
-    val isAuto: Boolean = false
+    val isAuto: Boolean = false,
+    val ascii: String? = null
 )

@@ -60,5 +60,13 @@
     <fragment
         android:id="@+id/citiesManageFragment"
         android:name="com.mmd.cityweather.citymanagement.presentation.CityManagementFragment"
-        android:label="CitiesManageFragment" />
+        android:label="CitiesManageFragment" >
+        <action
+            android:id="@+id/action_citiesManageFragment_to_addCityBottomSheet"
+            app:destination="@id/addCityBottomSheet" />
+    </fragment>
+    <dialog
+        android:id="@+id/addCityBottomSheet"
+        android:name="com.mmd.cityweather.addcity.presentation.AddCityBottomSheet"
+        android:label="AddCityBottomSheet" />
 </navigation>

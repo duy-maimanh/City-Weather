@@ -18,4 +18,12 @@
     <style name="ToolbarColoredBackArrow" parent="Widget.AppCompat.ActionBar">
         <item name="android:textColorSecondary">#ffffff</item>
     </style>
+
+    <style name="EdittextBottomBar">
+        <item name="colorPrimary">#d3d3d3</item>
+        <item name="colorControlNormal">#d3d3d3</item>
+        <item name="colorControlActivated">#d3d3d3</item>
+        <item name="colorControlHighlight">#d3d3d3</item>
+    </style>
+
 </resources>

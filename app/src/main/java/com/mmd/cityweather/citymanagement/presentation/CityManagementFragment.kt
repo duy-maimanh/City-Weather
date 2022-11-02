@@ -62,6 +62,7 @@ class CityManagementFragment : Fragment() {
         citiesAdapter.editEnable(isEdit)
         showDeleteButton(isEdit)
         updateToolbar(isEdit)
+        updateFabButton(isEdit)
     }
 
     private fun initView() {
@@ -71,20 +72,6 @@ class CityManagementFragment : Fragment() {
         (binding.toolbarManageCities.layoutParams as? ViewGroup.MarginLayoutParams)?.topMargin =
             statusBarHeight
 
-//        binding.toolbarManageCities.setNavigationOnClickListener {
-//            findNavController().popBackStack()
-//        }
-
-
-        binding.toolbarManageCities.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.menuEdit -> {
-                    viewModel.onEvent(CityManagementEvent.ChangeMode(editMode = true))
-                    return@setOnMenuItemClickListener true
-                }
-            }
-            false
-        }
         citiesAdapter = CityManagementAdapter()
         val decoration = DividerItemDecoration(
             requireContext(), DividerItemDecoration.VERTICAL
@@ -99,6 +86,9 @@ class CityManagementFragment : Fragment() {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(requireContext())
             addItemDecoration(decoration)
+        }
+        binding.fab.setOnClickListener {
+            findNavController().navigate(R.id.action_citiesManageFragment_to_addCityBottomSheet)
         }
     }
 
@@ -127,5 +117,28 @@ class CityManagementFragment : Fragment() {
                 findNavController().popBackStack()
             }
         }
+
+        binding.toolbarManageCities.menu.clear()
+        binding.toolbarManageCities.setOnMenuItemClickListener(null)
+        if (isEditMode) {
+            binding.toolbarManageCities.dismissPopupMenus()
+            binding.toolbarManageCities.menu.clear()
+        } else {
+            binding.toolbarManageCities.inflateMenu(R.menu.city_management_tool_bar)
+        }
+
+        binding.toolbarManageCities.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.menuEdit -> {
+                    viewModel.onEvent(CityManagementEvent.ChangeMode(editMode = true))
+                    return@setOnMenuItemClickListener true
+                }
+            }
+            false
+        }
+    }
+
+    private fun updateFabButton(isEditMode: Boolean) {
+        binding.fab.visibility = if (isEditMode) View.GONE else View.VISIBLE
     }
 }
