@@ -1,7 +1,6 @@
 package com.mmd.cityweather.citymanagement.presentation
 
 import android.os.Bundle
-import android.provider.Contacts.Intents.UI
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +15,6 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mmd.cityweather.R
 import com.mmd.cityweather.citymanagement.domain.model.UICity
-import com.mmd.cityweather.currentweather.presentation.CurrentWeatherViewModel
 import com.mmd.cityweather.databinding.FragmentCityManagementBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -57,6 +55,13 @@ class CityManagementFragment : Fragment() {
 
     private fun updateScreenState(state: CityManagementViewState) {
         updateListCity(state.cities)
+        updateEditMode(state.isEdit)
+    }
+
+    private fun updateEditMode(isEdit: Boolean) {
+        citiesAdapter.editEnable(isEdit)
+        showDeleteButton(isEdit)
+        updateToolbar(isEdit)
     }
 
     private fun initView() {
@@ -66,14 +71,15 @@ class CityManagementFragment : Fragment() {
         (binding.toolbarManageCities.layoutParams as? ViewGroup.MarginLayoutParams)?.topMargin =
             statusBarHeight
 
-        binding.toolbarManageCities.setNavigationOnClickListener {
-            findNavController().popBackStack()
-        }
+//        binding.toolbarManageCities.setNavigationOnClickListener {
+//            findNavController().popBackStack()
+//        }
+
+
         binding.toolbarManageCities.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.menuEdit -> {
-                    citiesAdapter.editEnable(true)
-                    showDeleteButton(true)
+                    viewModel.onEvent(CityManagementEvent.ChangeMode(editMode = true))
                     return@setOnMenuItemClickListener true
                 }
             }
@@ -103,5 +109,23 @@ class CityManagementFragment : Fragment() {
     private fun showDeleteButton(isShow: Boolean) {
         binding.btnDeleteCity.visibility =
             if (isShow) View.VISIBLE else View.GONE
+    }
+
+    private fun updateToolbar(isEditMode: Boolean) {
+        // update title toolbar
+        binding.toolbarManageCities.title =
+            getString(if (isEditMode) R.string.delete_title else R.string.management_city_title)
+        // update navigation icon
+        binding.toolbarManageCities.setNavigationIcon(
+            if (isEditMode) R.drawable.ic_baseline_close_24 else R.drawable.ic_baseline_arrow_back_24
+        )
+        binding.toolbarManageCities.setNavigationOnClickListener(null)
+        binding.toolbarManageCities.setNavigationOnClickListener {
+            if (isEditMode) {
+                viewModel.onEvent(CityManagementEvent.ChangeMode(false))
+            } else {
+                findNavController().popBackStack()
+            }
+        }
     }
 }

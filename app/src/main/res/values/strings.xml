@@ -23,4 +23,6 @@
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
     <string name="something_wrong">Something wrong</string>
+    <string name="delete_title">Delete</string>
+    <string name="management_city_title">City Management</string>
 </resources>

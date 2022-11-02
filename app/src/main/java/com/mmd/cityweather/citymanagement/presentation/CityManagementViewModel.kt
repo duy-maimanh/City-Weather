@@ -33,35 +33,48 @@ class CityManagementViewModel @Inject constructor(
     private fun subscribeCities() {
         getListCity.invoke().subscribeOn(Schedulers.computation())
             .observeOn(AndroidSchedulers.mainThread()).subscribe({
-                onUpdateCity(it.map { info -> UICity(info.cityId, info.name) })
+                onUpdateCity(it.map { info ->
+                    UICity(
+                        info.cityId, info.name, isDefault = info.isAuto
+                    )
+                })
             }, {
 
-            })
-            .addTo(compositeDisposable)
+            }).addTo(compositeDisposable)
     }
 
-    private fun onEvent(event: CityManagementEvent) {
+    fun onEvent(event: CityManagementEvent) {
         when (event) {
-            CityManagementEvent.AddCity -> {
+            is CityManagementEvent.AddCity -> {
 
             }
-            CityManagementEvent.DeleteCity -> {
+            is CityManagementEvent.DeleteCity -> {
                 deletedCity()
+            }
+            is CityManagementEvent.ChangeMode -> {
+                onUpdateEditMode(event.editMode)
             }
         }
     }
 
     private fun deletedCity() {
-        _state.value.cities.map { it.id }.let { idList ->
-            viewModelScope.launch {
-                deleteCityById.invoke(idList)
+        _state.value.cities.filter { it.deleted && !it.isDefault }.map { it.id }
+            .let { idList ->
+                viewModelScope.launch {
+                    deleteCityById.invoke(idList)
+                }
             }
-        }
     }
 
     private fun onUpdateCity(listCity: List<UICity>) {
         _state.update { oldState ->
             oldState.copy(cities = listCity)
+        }
+    }
+
+    private fun onUpdateEditMode(isEditMode: Boolean) {
+        _state.update { oldState ->
+            oldState.copy(isEdit = isEditMode)
         }
     }
 }

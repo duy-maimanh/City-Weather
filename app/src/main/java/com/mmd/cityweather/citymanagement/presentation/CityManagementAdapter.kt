@@ -17,7 +17,7 @@ class CityManagementAdapter :
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(city: UICity) {
             binding.checkboxRemoveCity.visibility =
-                if (isEditMode) View.VISIBLE else View.GONE
+                if (isEditMode && !city.isDefault) View.VISIBLE else View.GONE
             binding.tvCityName.text = city.name
         }
     }
