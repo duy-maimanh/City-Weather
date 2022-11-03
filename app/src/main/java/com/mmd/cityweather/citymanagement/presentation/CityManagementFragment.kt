@@ -136,6 +136,9 @@ class CityManagementFragment : Fragment() {
             }
             false
         }
+        binding.btnDeleteCity.setOnClickListener {
+            viewModel.onEvent(CityManagementEvent.DeleteCity)
+        }
     }
 
     private fun updateFabButton(isEditMode: Boolean) {

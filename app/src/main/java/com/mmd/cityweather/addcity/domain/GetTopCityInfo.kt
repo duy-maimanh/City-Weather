@@ -8,13 +8,14 @@ import javax.inject.Inject
 class GetTopCityInfo @Inject constructor(private val cityRepository: CityRepository) {
 
     private fun getTopCityId() = cityRepository.getTopCities()
-    suspend fun getAllCity(): List<UICity> {
+    suspend fun getAllCity(cityFromDisk: List<CityInfoDetail>): List<UICity> {
 
         val cityAlreadyAdded = cityRepository.getAllCityIdInDatabase()
 
-        val recommendedCity = getTopCityId().filterNot { it in cityAlreadyAdded }
+        val recommendedCity =
+            getTopCityId().filterNot { it in cityAlreadyAdded }
 
-        return cityRepository.getAllCityInfoOnDisk().filter {
+        return cityFromDisk.filter {
             it.cityId in recommendedCity
         }.map {
             UICity(
