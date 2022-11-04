@@ -1,9 +1,7 @@
 package com.mmd.cityweather.citymanagement.presentation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mmd.cityweather.addcity.domain.GetTopCityInfo
 import com.mmd.cityweather.citymanagement.domain.DeleteCityById
 import com.mmd.cityweather.citymanagement.domain.GetListCity
 import com.mmd.cityweather.citymanagement.domain.model.UICity
@@ -55,6 +53,9 @@ class CityManagementViewModel @Inject constructor(
             }
             is CityManagementEvent.ChangeMode -> {
                 onUpdateEditMode(event.editMode)
+            }
+            is CityManagementEvent.UpdateDeleteCityList -> {
+                _state.value.cities[event.pos].deleted = event.isDelete
             }
         }
     }

@@ -72,7 +72,11 @@ class CityManagementFragment : Fragment() {
         (binding.toolbarManageCities.layoutParams as? ViewGroup.MarginLayoutParams)?.topMargin =
             statusBarHeight
 
-        citiesAdapter = CityManagementAdapter()
+        citiesAdapter = CityManagementAdapter(onDelete = { position, isDelete ->
+            viewModel.onEvent(
+                CityManagementEvent.UpdateDeleteCityList(position, isDelete)
+            )
+        })
         val decoration = DividerItemDecoration(
             requireContext(), DividerItemDecoration.VERTICAL
         )
