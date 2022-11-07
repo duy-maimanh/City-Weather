@@ -6,12 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.inputmethod.EditorInfo
+import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -28,6 +33,8 @@ import kotlinx.coroutines.launch
 class AddCityBottomSheet : BottomSheetDialogFragment() {
     private val viewModel: AddCityBottomSheetViewModel by viewModels()
     private lateinit var binding: BottomSheetAddCityBinding
+    private var isRecommend = true
+    private lateinit var cityAdapter: SearchedCityAdapter
 
     companion object {
         const val TAG = "AddCityBottomSheet"
@@ -56,6 +63,7 @@ class AddCityBottomSheet : BottomSheetDialogFragment() {
                 setupFullHeight(parent)
                 behaviour.state = BottomSheetBehavior.STATE_EXPANDED
             }
+            parentLayout?.setBackgroundResource(android.R.color.transparent)
         }
         return dialog
     }
@@ -69,8 +77,47 @@ class AddCityBottomSheet : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView()
         subscribeToViewStateUpdates()
         viewModel.onEvent(AddCityBottomSheetEvent.LoadTopCities)
+    }
+
+    private fun initView() {
+        binding.edtSearchQuery.doOnTextChanged { _, _, _, count ->
+            changeModeRecommend(count == 0)
+        }
+        binding.edtSearchQuery.setOnEditorActionListener { textView, actionId, keyEvent ->
+            when (actionId) {
+                EditorInfo.IME_ACTION_SEARCH -> {
+                    viewModel.onEvent(AddCityBottomSheetEvent.SearchRequest(textView.text.toString()))
+                    return@setOnEditorActionListener true
+                }
+            }
+            return@setOnEditorActionListener false
+        }
+        cityAdapter = SearchedCityAdapter()
+        val searchedCityDecoration =
+            DividerItemDecoration(requireContext(), DividerItemDecoration.HORIZONTAL)
+        with(binding.recyclerviewSearchedCities) {
+            adapter = cityAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+            setHasFixedSize(true)
+            addItemDecoration(searchedCityDecoration)
+        }
+    }
+
+    private fun changeModeRecommend(isRecommend: Boolean) {
+        this.isRecommend = isRecommend
+        if (isRecommend) {
+            binding.tvTopCity.visibility = View.VISIBLE
+            binding.chipCities.visibility = View.VISIBLE
+            binding.tvInstructSearch.visibility = View.GONE
+            binding.recyclerviewSearchedCities.visibility = View.GONE
+        } else {
+            binding.tvTopCity.visibility = View.GONE
+            binding.chipCities.visibility = View.GONE
+            updateListSearchCity(viewModel.state.value.searchCity)
+        }
     }
 
     private fun subscribeToViewStateUpdates() {
@@ -79,8 +126,19 @@ class AddCityBottomSheet : BottomSheetDialogFragment() {
                 viewModel.state.collect {
                     updateTopCityList(it.topCity)
                     addCityDone(it.addCityDone)
+                    updateListSearchCity(it.searchCity)
                 }
             }
+        }
+    }
+
+    private fun updateListSearchCity(searchedCities: List<UICity>) {
+        if (!isRecommend) {
+            binding.tvInstructSearch.visibility =
+                if (searchedCities.isEmpty()) View.VISIBLE else View.GONE
+            binding.recyclerviewSearchedCities.visibility =
+                if (searchedCities.isNotEmpty()) View.VISIBLE else View.GONE
+            cityAdapter.updateListCity(searchedCities)
         }
     }
 

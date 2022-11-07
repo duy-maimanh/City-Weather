@@ -5,5 +5,6 @@ import com.mmd.cityweather.common.presentation.Event
 
 data class AddCityBottomSheetViewState(
     var topCity: List<UICity> = emptyList(),
-    var addCityDone: Event<Boolean>? = null
+    var addCityDone: Event<Boolean>? = null,
+    var searchCity: List<UICity> = emptyList()
 )

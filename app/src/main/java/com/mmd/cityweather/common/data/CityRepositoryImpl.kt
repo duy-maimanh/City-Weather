@@ -61,7 +61,8 @@ class CityRepositoryImpl @Inject constructor(
                 lat = data[2].toDouble(),
                 lon = data[3].toDouble(),
                 country = data[4],
-                true
+                isAuto = true,
+                ascii = data[1]
             )
         }
     }
@@ -96,7 +97,8 @@ class CityRepositoryImpl @Inject constructor(
                                     name = line[0],
                                     lat = line[2].toDouble(),
                                     lon = line[3].toDouble(),
-                                    country = line[4]
+                                    country = line[4],
+                                    ascii = line[1]
                                 )
                             )
                             line = r.readNext()

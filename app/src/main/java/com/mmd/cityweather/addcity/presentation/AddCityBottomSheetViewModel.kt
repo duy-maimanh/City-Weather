@@ -36,7 +36,7 @@ class AddCityBottomSheetViewModel @Inject constructor(
                 getTopCity()
             }
             is AddCityBottomSheetEvent.SearchRequest -> {
-                event.request
+                searchCity(event.request)
             }
         }
     }
@@ -60,6 +60,15 @@ class AddCityBottomSheetViewModel @Inject constructor(
             _state.update { oldState ->
                 oldState.copy(topCity = topCities)
             }
+        }
+    }
+
+    private fun searchCity(searchQuery: String) {
+        val results = cityFromDisk.filter {
+            it.ascii?.lowercase()?.contains(searchQuery.lowercase()) ?: false
+        }.map { UICity(it.cityId, it.name) }
+        _state.update { oldState ->
+            oldState.copy(searchCity = results)
         }
     }
 }
