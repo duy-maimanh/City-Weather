@@ -9,7 +9,7 @@ interface Cache {
     suspend fun storeCurrentWeather(currentWeather: CachedCurrentWeathers)
     fun getCurrentWeather(cityId: Long): Flowable<CachedCurrentWeathers>
     suspend fun storeCity(city: Cities)
-    fun getCityInfo(cityId: Long): Flowable<Cities>
+    fun getCityInfoById(cityId: Long): Flowable<Cities>
     suspend fun cityIsExist(): Boolean
     suspend fun deleteCityById(cityId: Long)
     suspend fun storeForecastWeather(forecastWeathers: List<CachedForecastWeathers>)

@@ -21,7 +21,9 @@ class CityRepositoryImpl @Inject constructor(
 ) : CityRepository {
 
     override fun getCityInformation(cityId: Long): Flowable<CityInfoDetail> {
-        return cache.getCityInfo(cityId).map { it.toDomain() }
+        return cache.getCityInfoById(cityId).map {
+            it.toDomain()
+        }
     }
 
     override suspend fun insertCity(city: CityInfoDetail) {

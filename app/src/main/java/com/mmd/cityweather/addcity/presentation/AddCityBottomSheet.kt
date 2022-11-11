@@ -143,6 +143,7 @@ class AddCityBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun updateTopCityList(cities: List<UICity>) {
+        binding.chipCities.removeAllViews()
         cities.forEach { city ->
             val chip = Chip(requireContext())
             chip.text = city.name

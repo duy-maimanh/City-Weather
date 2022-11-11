@@ -73,7 +73,9 @@ class CurrentWeatherViewModel @Inject constructor(
 
                         // add new city if it already just replace it
                         // save selected into preference for next time open
-                        insertDefaultCity(info)
+                        insertDefaultCity(info.apply {
+                            isAuto = true
+                        })
 
                         // send event to open new fragment
                         _state.update { oldState ->
