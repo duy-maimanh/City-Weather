@@ -124,8 +124,8 @@ class CityRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getAllCityInDatabase(): Flowable<List<CityInfoDetail>> {
-        return cache.getAllCity().map { it.map { city -> city.toDomain() } }
+    override fun subscribeCityInDatabase(): Flowable<List<CityInfoDetail>> {
+        return cache.subscribeCityFromDatabase().map { it.map { city -> city.toDomain() } }
     }
 
     override fun getTopCities(): List<Long> {
@@ -146,5 +146,9 @@ class CityRepositoryImpl @Inject constructor(
 
     override suspend fun getAllCityIdInDatabase(): List<Long> {
        return cache.getAllCityIdInDatabase()
+    }
+
+    override suspend fun getAllCityFromDatabase(): List<CityInfoDetail> {
+        return cache.getALlCity().map { it.toDomain() }
     }
 }

@@ -3,7 +3,7 @@ package com.mmd.cityweather.citymanagement.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mmd.cityweather.citymanagement.domain.DeleteCityById
-import com.mmd.cityweather.citymanagement.domain.GetListCity
+import com.mmd.cityweather.citymanagement.domain.SubscribeCityFromDatabase
 import com.mmd.cityweather.citymanagement.domain.model.UICity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CityManagementViewModel @Inject constructor(
-    private val getListCity: GetListCity,
+    private val subscribeCityFromDatabase: SubscribeCityFromDatabase,
     private val deleteCityById: DeleteCityById,
     private val compositeDisposable: CompositeDisposable
 ) : ViewModel() {
@@ -31,7 +31,7 @@ class CityManagementViewModel @Inject constructor(
     }
 
     private fun subscribeCities() {
-        getListCity.invoke().subscribeOn(Schedulers.computation())
+        subscribeCityFromDatabase.invoke().subscribeOn(Schedulers.computation())
             .observeOn(AndroidSchedulers.mainThread()).subscribe({
                 onUpdateCity(it.map { info ->
                     UICity(

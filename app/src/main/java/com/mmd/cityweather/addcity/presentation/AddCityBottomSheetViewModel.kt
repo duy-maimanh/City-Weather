@@ -1,19 +1,18 @@
 package com.mmd.cityweather.addcity.presentation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mmd.cityweather.addcity.domain.AddCity
+import com.mmd.cityweather.addcity.domain.GetAllCityFormDatabase
 import com.mmd.cityweather.addcity.domain.GetAllCityFormDisk
 import com.mmd.cityweather.addcity.domain.GetTopCityInfo
-import com.mmd.cityweather.citymanagement.domain.GetListCity
+import com.mmd.cityweather.citymanagement.domain.SubscribeCityFromDatabase
 import com.mmd.cityweather.citymanagement.domain.model.UICity
 import com.mmd.cityweather.common.domain.model.CityInfoDetail
 import com.mmd.cityweather.common.presentation.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,8 +26,7 @@ class AddCityBottomSheetViewModel @Inject constructor(
     private val getTopCityInfo: GetTopCityInfo,
     private val getAllCityFormDisk: GetAllCityFormDisk,
     private val addCity: AddCity,
-    private val getListCity: GetListCity,
-    private val disposable: CompositeDisposable
+    private val getAllCityFromDatabase: GetAllCityFormDatabase
 ) : ViewModel() {
     private val _state = MutableStateFlow(AddCityBottomSheetViewState())
     val state: StateFlow<AddCityBottomSheetViewState> = _state.asStateFlow()
@@ -77,24 +75,19 @@ class AddCityBottomSheetViewModel @Inject constructor(
     }
 
     private fun searchCity(searchQuery: String) {
-        getListCity().observeOn(Schedulers.io())
-            .subscribeOn(AndroidSchedulers.mainThread())
-            .toList()
-            .subscribe({
-                val addedCities = it.first()
-                val results = cityFromDisk.filter {
-                    it.ascii?.lowercase()?.contains(searchQuery.lowercase())
-                        ?: false
-                }.filterNot { it.cityId in addedCities.map { it.cityId } }.map {
+        viewModelScope.launch(Dispatchers.IO) {
+            val results = cityFromDisk.filter {
+                it.ascii?.lowercase()?.contains(searchQuery.lowercase()) ?: false
+            }
+                .filterNot { searched -> searched.cityId in getAllCityFromDatabase().map { database -> database.cityId } }
+                .map {
                     UICity(
                         it.cityId, it.name
                     )
                 }
-                _state.update { oldState ->
-                    oldState.copy(searchCity = results)
-                }
-            }, {
-
-            }).addTo(disposable)
+            _state.update { oldState ->
+                oldState.copy(searchCity = results)
+            }
+        }
     }
 }

@@ -49,11 +49,15 @@ class RoomCache @Inject constructor(
         return weatherDao.getForecastWeather(cityId)
     }
 
-    override fun getAllCity(): Flowable<List<Cities>> {
-        return cityDao.getAllCity()
+    override fun subscribeCityFromDatabase(): Flowable<List<Cities>> {
+        return cityDao.subscribeCity()
     }
 
     override suspend fun getAllCityIdInDatabase(): List<Long> {
-        return cityDao.getAllCityId()
+        return cityDao.getAllCity().map { it.cityId }
+    }
+
+    override suspend fun getALlCity(): List<Cities> {
+        return cityDao.getAllCity()
     }
 }

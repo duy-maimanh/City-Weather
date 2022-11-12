@@ -23,13 +23,13 @@ abstract class CitiesDao {
 
     @Transaction
     @Query("SELECT * FROM cities")
-    abstract fun getAllCity(): Flowable<List<Cities>>
+    abstract fun subscribeCity(): Flowable<List<Cities>>
 
     @Transaction
     @Query("DELETE FROM cities WHERE cityId in (:idList)")
     abstract fun deleteCity(idList: List<Long>)
 
     @Transaction
-    @Query("SELECT cityId FROM cities")
-    abstract fun getAllCityId(): List<Long>
+    @Query("SELECT * FROM cities")
+    abstract fun getAllCity(): List<Cities>
 }

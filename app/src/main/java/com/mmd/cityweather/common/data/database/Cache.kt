@@ -14,7 +14,8 @@ interface Cache {
     suspend fun deleteCityById(cityId: Long)
     suspend fun storeForecastWeather(forecastWeathers: List<CachedForecastWeathers>)
     fun getForecastWeather(cityId: Long): Flowable<List<CachedForecastWeathers>>
-    fun getAllCity(): Flowable<List<Cities>>
+    fun subscribeCityFromDatabase(): Flowable<List<Cities>>
     suspend fun deleteCityById(idList: List<Long>)
     suspend fun getAllCityIdInDatabase(): List<Long>
+    suspend fun getALlCity(): List<Cities>
 }
