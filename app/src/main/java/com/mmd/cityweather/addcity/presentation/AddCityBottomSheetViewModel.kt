@@ -5,10 +5,15 @@ import androidx.lifecycle.viewModelScope
 import com.mmd.cityweather.addcity.domain.AddCity
 import com.mmd.cityweather.addcity.domain.GetAllCityFormDisk
 import com.mmd.cityweather.addcity.domain.GetTopCityInfo
+import com.mmd.cityweather.citymanagement.domain.GetListCity
 import com.mmd.cityweather.citymanagement.domain.model.UICity
 import com.mmd.cityweather.common.domain.model.CityInfoDetail
 import com.mmd.cityweather.common.presentation.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,6 +27,8 @@ class AddCityBottomSheetViewModel @Inject constructor(
     private val getTopCityInfo: GetTopCityInfo,
     private val getAllCityFormDisk: GetAllCityFormDisk,
     private val addCity: AddCity,
+    private val getListCity: GetListCity,
+    private val disposable: CompositeDisposable
 ) : ViewModel() {
     private val _state = MutableStateFlow(AddCityBottomSheetViewState())
     val state: StateFlow<AddCityBottomSheetViewState> = _state.asStateFlow()
@@ -29,8 +36,9 @@ class AddCityBottomSheetViewModel @Inject constructor(
 
     fun onEvent(event: AddCityBottomSheetEvent) {
         when (event) {
-            is AddCityBottomSheetEvent.AddCity -> {
-                addCityAndFinish(event.position)
+            is AddCityBottomSheetEvent.AddCityByPosition -> {
+                val citySelected = _state.value.topCity[event.position]
+                addCityAndFinish(citySelected)
             }
             is AddCityBottomSheetEvent.LoadTopCities -> {
                 getTopCity()
@@ -38,12 +46,17 @@ class AddCityBottomSheetViewModel @Inject constructor(
             is AddCityBottomSheetEvent.SearchRequest -> {
                 searchCity(event.request)
             }
+            is AddCityBottomSheetEvent.AddCityById -> {
+                val citySelected = _state.value.searchCity.find {
+                    it.id == event.cityId
+                }
+                citySelected?.let { addCityAndFinish(it) }
+            }
         }
     }
 
-    private fun addCityAndFinish(pos: Int) {
+    private fun addCityAndFinish(citySelected: UICity) {
         viewModelScope.launch(Dispatchers.IO) {
-            val citySelected = _state.value.topCity[pos]
             cityFromDisk.find { it.cityId == citySelected.id }?.let {
                 addCity(it)
                 _state.update { oldState ->
@@ -64,11 +77,24 @@ class AddCityBottomSheetViewModel @Inject constructor(
     }
 
     private fun searchCity(searchQuery: String) {
-        val results = cityFromDisk.filter {
-            it.ascii?.lowercase()?.contains(searchQuery.lowercase()) ?: false
-        }.map { UICity(it.cityId, it.name) }
-        _state.update { oldState ->
-            oldState.copy(searchCity = results)
-        }
+        getListCity().observeOn(Schedulers.io())
+            .subscribeOn(AndroidSchedulers.mainThread())
+            .toList()
+            .subscribe({
+                val addedCities = it.first()
+                val results = cityFromDisk.filter {
+                    it.ascii?.lowercase()?.contains(searchQuery.lowercase())
+                        ?: false
+                }.filterNot { it.cityId in addedCities.map { it.cityId } }.map {
+                    UICity(
+                        it.cityId, it.name
+                    )
+                }
+                _state.update { oldState ->
+                    oldState.copy(searchCity = results)
+                }
+            }, {
+
+            }).addTo(disposable)
     }
 }

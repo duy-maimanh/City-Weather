@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
@@ -89,15 +88,24 @@ class AddCityBottomSheet : BottomSheetDialogFragment() {
         binding.edtSearchQuery.setOnEditorActionListener { textView, actionId, keyEvent ->
             when (actionId) {
                 EditorInfo.IME_ACTION_SEARCH -> {
-                    viewModel.onEvent(AddCityBottomSheetEvent.SearchRequest(textView.text.toString()))
+                    viewModel.onEvent(
+                        AddCityBottomSheetEvent.SearchRequest(
+                            textView.text.toString()
+                        )
+                    )
                     return@setOnEditorActionListener true
                 }
             }
             return@setOnEditorActionListener false
         }
-        cityAdapter = SearchedCityAdapter()
+        cityAdapter = SearchedCityAdapter {
+            viewModel.onEvent(AddCityBottomSheetEvent.AddCityById(it))
+        }
         val searchedCityDecoration =
-            DividerItemDecoration(requireContext(), DividerItemDecoration.HORIZONTAL)
+            DividerItemDecoration(
+                requireContext(),
+                DividerItemDecoration.HORIZONTAL
+            )
         with(binding.recyclerviewSearchedCities) {
             adapter = cityAdapter
             layoutManager = LinearLayoutManager(requireContext())
@@ -167,7 +175,7 @@ class AddCityBottomSheet : BottomSheetDialogFragment() {
                 }
             }
             if (checkedIds.isNotEmpty()) {
-                viewModel.onEvent(AddCityBottomSheetEvent.AddCity(pos))
+                viewModel.onEvent(AddCityBottomSheetEvent.AddCityByPosition(pos))
             }
         }
     }
