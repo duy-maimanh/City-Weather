@@ -270,15 +270,15 @@ class CurrentWeatherFragment : Fragment() {
         }
 
         if (snackbarMessage.isNotEmpty()) {
-            Snackbar.make(requireView(), snackbarMessage, Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(requireView(), snackbarMessage, Snackbar.LENGTH_LONG).show()
         }
     }
 
     private fun openForecastWeatherDetail(cityId: Long) {
         val action =
             CurrentWeatherFragmentDirections.actionCurrentWeatherFragmentToForecastWeatherDetailFragment(
-                    cityId
-                )
+                cityId
+            )
         findNavController().navigate(action)
     }
 }
