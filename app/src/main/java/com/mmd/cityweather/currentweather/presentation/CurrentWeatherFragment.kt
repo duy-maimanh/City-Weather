@@ -160,11 +160,16 @@ class CurrentWeatherFragment : Fragment() {
                     return@setOnMenuItemClickListener true
                 }
                 R.id.setting -> {
+                    openSetting()
                     return@setOnMenuItemClickListener true
                 }
             }
             false
         }
+    }
+
+    private fun openSetting() {
+        findNavController().navigate(R.id.action_currentWeatherFragment_to_settingsFragment)
     }
 
     private fun openManageCitiesFragment() {
@@ -272,6 +277,7 @@ class CurrentWeatherFragment : Fragment() {
         if (snackbarMessage.isNotEmpty()) {
             Snackbar.make(requireView(), snackbarMessage, Snackbar.LENGTH_LONG).show()
         }
+        updateLoadingStatus(false)
     }
 
     private fun openForecastWeatherDetail(cityId: Long) {
