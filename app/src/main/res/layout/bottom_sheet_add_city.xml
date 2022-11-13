@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/addCityBottomBar"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_bottom_sheet"
+    android:minHeight="650dp"
+    android:paddingStart="12dp"
+    android:paddingEnd="12dp"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+    <View
+        android:id="@+id/viewBottomSheet"
+        android:layout_width="100dp"
+        android:layout_height="3dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/white"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/edtAddCity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@android:color/transparent"
+        android:hint="Search your location"
+        android:textColorHint="#D3D3D3"
+        android:theme="@style/EdittextBottomBar"
+        app:endIconMode="clear_text"
+        app:endIconTint="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/viewBottomSheet">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtSearchQuery"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:textColor="@android:color/white" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/tvInstructSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Click 'Search' on your keyboard to search city."
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/edtAddCity" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerviewSearchedCities"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edtAddCity" />
+
+    <TextView
+        android:id="@+id/tvTopCity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Top City"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/edtAddCity" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chipCities"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/tvTopCity"
+        app:singleSelection="true" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

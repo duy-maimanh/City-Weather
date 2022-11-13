@@ -21,7 +21,9 @@ class CityRepositoryImpl @Inject constructor(
 ) : CityRepository {
 
     override fun getCityInformation(cityId: Long): Flowable<CityInfoDetail> {
-        return cache.getCityInfo(cityId).map { it.toDomain() }
+        return cache.getCityInfoById(cityId).map {
+            it.toDomain()
+        }
     }
 
     override suspend fun insertCity(city: CityInfoDetail) {
@@ -40,7 +42,8 @@ class CityRepositoryImpl @Inject constructor(
         return withContext(Dispatchers.IO) {
             var data = listOf<String>()
             assetManager?.open("cities/worldcities.csv")?.let { inputStream ->
-                val fr = InputStreamReader(inputStream, Charset.forName("UTF-8"))
+                val fr =
+                    InputStreamReader(inputStream, Charset.forName("UTF-8"))
                 // format city,city_ascii,lat,lng,country,iso2,id
                 fr.use {
                     val reader = CSVReader(it)
@@ -60,7 +63,8 @@ class CityRepositoryImpl @Inject constructor(
                 lat = data[2].toDouble(),
                 lon = data[3].toDouble(),
                 country = data[4],
-                true
+                isAuto = true,
+                ascii = data[1]
             )
         }
     }
@@ -78,7 +82,8 @@ class CityRepositoryImpl @Inject constructor(
         return withContext(Dispatchers.IO) {
             val cityInfoDetails = mutableListOf<CityInfoDetail>()
             assetManager?.open("cities/worldcities.csv")?.let { inputStream ->
-                val fr = InputStreamReader(inputStream, Charset.forName("UTF-8"))
+                val fr =
+                    InputStreamReader(inputStream, Charset.forName("UTF-8"))
                 // format city,city_ascii,lat,lng,country,iso2,id
                 fr.use {
                     val reader = CSVReader(it)
@@ -94,7 +99,8 @@ class CityRepositoryImpl @Inject constructor(
                                     name = line[0],
                                     lat = line[2].toDouble(),
                                     lon = line[3].toDouble(),
-                                    country = line[4]
+                                    country = line[4],
+                                    ascii = line[1]
                                 )
                             )
                             line = r.readNext()
@@ -110,5 +116,39 @@ class CityRepositoryImpl @Inject constructor(
         withContext(Dispatchers.IO) {
             cache.deleteCityById(cityId)
         }
+    }
+
+    override suspend fun deleteCityById(idList: List<Long>) {
+        withContext(Dispatchers.IO) {
+            cache.deleteCityById(idList)
+        }
+    }
+
+    override fun subscribeCityInDatabase(): Flowable<List<CityInfoDetail>> {
+        return cache.subscribeCityFromDatabase().map { it.map { city -> city.toDomain() } }
+    }
+
+    override fun getTopCities(): List<Long> {
+        return listOf(
+            1840034016,
+            1250015082,
+            1124469960,
+            1392685764,
+            1380382862,
+            1784736618,
+            1036074917,
+            1702341327,
+            1156228865,
+            1300715560,
+            1704949870
+        )
+    }
+
+    override suspend fun getAllCityIdInDatabase(): List<Long> {
+       return cache.getAllCityIdInDatabase()
+    }
+
+    override suspend fun getAllCityFromDatabase(): List<CityInfoDetail> {
+        return cache.getALlCity().map { it.toDomain() }
     }
 }

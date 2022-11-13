@@ -25,8 +25,8 @@ class RoomCache @Inject constructor(
         cityDao.insertCity(city)
     }
 
-    override fun getCityInfo(cityId: Long): Flowable<Cities> {
-        return cityDao.getInfoCity()
+    override fun getCityInfoById(cityId: Long): Flowable<Cities> {
+        return cityDao.getInfoCity(cityId)
     }
 
     override suspend fun cityIsExist(): Boolean {
@@ -37,11 +37,27 @@ class RoomCache @Inject constructor(
         return cityDao.delete(cityId)
     }
 
+    override suspend fun deleteCityById(idList: List<Long>) {
+        return cityDao.deleteCity(idList)
+    }
+
     override suspend fun storeForecastWeather(forecastWeathers: List<CachedForecastWeathers>) {
         weatherDao.insertForecastWeather(forecastWeathers)
     }
 
     override fun getForecastWeather(cityId: Long): Flowable<List<CachedForecastWeathers>> {
         return weatherDao.getForecastWeather(cityId)
+    }
+
+    override fun subscribeCityFromDatabase(): Flowable<List<Cities>> {
+        return cityDao.subscribeCity()
+    }
+
+    override suspend fun getAllCityIdInDatabase(): List<Long> {
+        return cityDao.getAllCity().map { it.cityId }
+    }
+
+    override suspend fun getALlCity(): List<Cities> {
+        return cityDao.getAllCity()
     }
 }

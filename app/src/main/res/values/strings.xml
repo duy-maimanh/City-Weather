@@ -2,6 +2,7 @@
     <string name="app_name">City Weather</string>
     <string name="menu_setting">Setting</string>
     <string name="menu_manage_cities">Cities manage</string>
+    <string name="menu_edit">Edit</string>
     <string name="tv_celsius_unit">°C</string>
     <string name="tv_open_weather_api">Open weather API</string>
     <string name="tv_pressure_description">Pressure</string>
@@ -22,4 +23,7 @@
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
     <string name="something_wrong">Something wrong</string>
+    <string name="delete_title">Delete</string>
+    <string name="management_city_title">City Management</string>
+    <string name="no_data">…</string>
 </resources>

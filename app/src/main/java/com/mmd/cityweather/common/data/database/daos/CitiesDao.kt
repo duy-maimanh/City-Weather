@@ -7,8 +7,8 @@ import io.reactivex.Flowable
 @Dao
 abstract class CitiesDao {
     @Transaction
-    @Query("SELECT * FROM cities")
-    abstract fun getInfoCity(): Flowable<Cities>
+    @Query("SELECT * FROM cities WHERE cityId = :cityId")
+    abstract fun getInfoCity(cityId: Long): Flowable<Cities>
 
     @Insert
     abstract fun insertCity(cities: Cities)
@@ -20,4 +20,16 @@ abstract class CitiesDao {
     @Transaction
     @Query("DELETE FROM cities WHERE cityId = :cityId")
     abstract fun delete(cityId: Long)
+
+    @Transaction
+    @Query("SELECT * FROM cities")
+    abstract fun subscribeCity(): Flowable<List<Cities>>
+
+    @Transaction
+    @Query("DELETE FROM cities WHERE cityId in (:idList)")
+    abstract fun deleteCity(idList: List<Long>)
+
+    @Transaction
+    @Query("SELECT * FROM cities")
+    abstract fun getAllCity(): List<Cities>
 }

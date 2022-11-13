@@ -4,6 +4,7 @@ import android.os.SystemClock
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mmd.cityweather.common.createExceptionHandler
 import com.mmd.cityweather.common.domain.model.CityInfoDetail
 import com.mmd.cityweather.common.presentation.Event
 import com.mmd.cityweather.common.presentation.models.UICurrentWeather
@@ -73,7 +74,9 @@ class CurrentWeatherViewModel @Inject constructor(
 
                         // add new city if it already just replace it
                         // save selected into preference for next time open
-                        insertDefaultCity(info)
+                        insertDefaultCity(info.apply {
+                            isAuto = true
+                        })
 
                         // send event to open new fragment
                         _state.update { oldState ->
@@ -87,7 +90,8 @@ class CurrentWeatherViewModel @Inject constructor(
 
     private fun requestCurrentWeather() {
         onLoadingStatus(true)
-        viewModelScope.launch {
+        val exception = viewModelScope.createExceptionHandler("Network error", ::onFailure)
+        viewModelScope.launch(exception) {
             requestCurrentWeather(
                 selectedCityInfo.cityId,
                 selectedCityInfo.lat,

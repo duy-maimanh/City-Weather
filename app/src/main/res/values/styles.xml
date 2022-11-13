@@ -14,4 +14,25 @@
     <style name="WeatherToolbarStyle" parent="Widget.AppCompat.Light.ActionButton.Overflow">
         <item name="tint">#FFFFFF</item>
     </style>
+
+    <style name="ToolbarColoredBackArrow" parent="Widget.AppCompat.ActionBar">
+        <item name="android:textColorSecondary">#ffffff</item>
+    </style>
+
+    <style name="EdittextBottomBar">
+        <item name="colorPrimary">#d3d3d3</item>
+        <item name="colorControlNormal">#d3d3d3</item>
+        <item name="colorControlActivated">#d3d3d3</item>
+        <item name="colorControlHighlight">#d3d3d3</item>
+    </style>
+
+    <style name="SheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:colorBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.3</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
 </resources>
