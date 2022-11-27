@@ -26,4 +26,8 @@
     <string name="delete_title">Delete</string>
     <string name="management_city_title">City Management</string>
     <string name="no_data">…</string>
+    <!-- Preference Titles -->
+    <string name="update_header">Update Weather</string>
+    <!-- Weather Update Preferences -->
+    <string name="auto_update_weather_title">Auto update weather (per 30 minutes)</string>
 </resources>

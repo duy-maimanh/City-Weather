@@ -1,0 +1,11 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/update_header">
+
+        <SwitchPreferenceCompat
+            app:key="auto_update_weather"
+            app:title="@string/auto_update_weather_title" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

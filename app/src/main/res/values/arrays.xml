@@ -1,0 +1,12 @@
+<resources>
+    <!-- Update Preference -->
+    <string-array name="update_entries">
+        <item>Auto Update (per 30 minute)</item>
+        <item>Manual Update</item>
+    </string-array>
+
+    <string-array name="update_values">
+        <item>auto_update</item>
+        <item>manual update</item>
+    </string-array>
+</resources>

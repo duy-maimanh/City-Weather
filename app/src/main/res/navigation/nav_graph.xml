@@ -34,6 +34,13 @@
             app:exitAnim="@anim/exit_from_left"
             app:popEnterAnim="@anim/enter_from_left"
             app:popExitAnim="@anim/exit_from_right" />
+        <action
+            android:id="@+id/action_currentWeatherFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_from_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_from_right" />
 
     </fragment>
 
@@ -52,7 +59,8 @@
     <fragment
         android:id="@+id/forecastWeatherDetailFragment"
         android:name="com.mmd.cityweather.forecastweatherdetail.presentation.ForecastWeatherDetailFragment"
-        android:label="ForecastWeatherDetailFragment">
+        android:label="ForecastWeatherDetailFragment"
+        tools:layout="@layout/fragment_forecast_weather_detail">
         <argument
             android:name="cityId"
             app:argType="long" />
@@ -60,7 +68,8 @@
     <fragment
         android:id="@+id/citiesManageFragment"
         android:name="com.mmd.cityweather.citymanagement.presentation.CityManagementFragment"
-        android:label="CitiesManageFragment" >
+        android:label="CitiesManageFragment"
+        tools:layout="@layout/fragment_city_management">
         <action
             android:id="@+id/action_citiesManageFragment_to_addCityBottomSheet"
             app:destination="@id/addCityBottomSheet" />
@@ -68,5 +77,11 @@
     <dialog
         android:id="@+id/addCityBottomSheet"
         android:name="com.mmd.cityweather.addcity.presentation.AddCityBottomSheet"
-        android:label="AddCityBottomSheet" />
+        android:label="AddCityBottomSheet"
+        tools:layout="@layout/bottom_sheet_add_city" />
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.mmd.cityweather.setting.presentation.SettingsFragment"
+        android:label="SettingsFragment" />
 </navigation>

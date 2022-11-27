@@ -1,16 +1,21 @@
 package com.mmd.cityweather.common
 
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Build
 import android.os.Bundle
+import android.os.IBinder
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.mmd.cityweather.R
+import com.mmd.cityweather.common.services.UpdateWeatherService
 import com.mmd.cityweather.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 import dev.chrisbanes.insetter.applyInsetter
@@ -73,5 +78,46 @@ class MainActivity : AppCompatActivity() {
 
     fun updateDataStatus(status: Boolean) {
         hasData = status
+    }
+
+
+    private var updateWeatherService: UpdateWeatherService? = null
+    private var mBound: Boolean = false
+
+    /** Defines callbacks for service binding, passed to bindService()  */
+    private val connection = object : ServiceConnection {
+
+        override fun onServiceConnected(className: ComponentName, service: IBinder) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            val binder = service as UpdateWeatherService.LocalBinder
+            updateWeatherService = binder.getService()
+            updateWeatherService?.startUpdate()
+            mBound = true
+        }
+
+        override fun onServiceDisconnected(arg0: ComponentName) {
+            mBound = false
+        }
+    }
+
+    fun runWeatherUpdate() {
+        if (!mBound) {
+            Intent(this, UpdateWeatherService::class.java).also { intent ->
+                bindService(intent, connection, Context.BIND_AUTO_CREATE)
+            }
+        }
+    }
+
+    fun closeWeatherUpdate() {
+        if (mBound) {
+            updateWeatherService?.stopUpdate()
+            unbindService(connection)
+            mBound = false
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        closeWeatherUpdate()
     }
 }

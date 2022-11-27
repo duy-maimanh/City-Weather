@@ -73,6 +73,7 @@ dependencies {
 
     // Moshi for Json convert
     implementation 'com.squareup.moshi:moshi:1.13.0'
+    implementation 'androidx.preference:preference:1.2.0'
     kapt "com.squareup.moshi:moshi-kotlin-codegen:1.13.0"
 
     // Retrofit with Moshi Converter
