@@ -36,8 +36,10 @@ class CurrentWeatherViewModel @Inject constructor(
     private val insertDefaultCity: InsertDefaultCity,
     private val compositeDisposable: CompositeDisposable,
     private val getBackgroundForCurrentWeather: GetBackgroundForCurrentWeather,
-    private val forecastWeather: ForecastWeather
+    private val forecastWeather: ForecastWeather,
+    private val checkAutoUpdateWeather: CheckAutoUpdateWeather
 ) : ViewModel() {
+
     private val _state = MutableStateFlow(CurrentWeatherViewState())
     val state: StateFlow<CurrentWeatherViewState> = _state.asStateFlow()
     private lateinit var selectedCityInfo: CityInfoDetail
@@ -61,6 +63,10 @@ class CurrentWeatherViewModel @Inject constructor(
                 onOpenForecastWeatherDetail()
             }
         }
+    }
+
+    fun checkAutoUpdate() {
+        onAutoUpdate(checkAutoUpdateWeather())
     }
 
     private fun getCityInfoByLocation(lat: Double, lon: Double) {
@@ -112,6 +118,7 @@ class CurrentWeatherViewModel @Inject constructor(
                 subscribeToCurrentWeatherUpdates()
                 subscribeToForecastWeather()
                 onHasCityInfo(true)
+                checkAutoUpdate()
             }, {
                 onFailure(it)
             }).addTo(compositeDisposable)
@@ -213,6 +220,15 @@ class CurrentWeatherViewModel @Inject constructor(
     private fun onFailure(throwable: Throwable) {
         _state.update { oldState ->
             oldState.copy(loading = false, failure = Event(throwable))
+        }
+    }
+
+
+    private fun onAutoUpdate(isStart: Boolean) {
+        if (this::selectedCityInfo.isInitialized) {
+            _state.update { oldState ->
+                oldState.copy(startAutoUpdate = Pair(isStart, selectedCityInfo))
+            }
         }
     }
 

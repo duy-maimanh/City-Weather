@@ -1,5 +1,6 @@
 package com.mmd.cityweather.currentweather.presentation
 
+import com.mmd.cityweather.common.domain.model.CityInfoDetail
 import com.mmd.cityweather.common.presentation.Event
 import com.mmd.cityweather.common.presentation.models.UICurrentWeather
 import com.mmd.cityweather.common.presentation.models.UIForecastWeather
@@ -13,5 +14,6 @@ data class CurrentWeatherViewState(
     val forecastWeather: List<UIForecastWeather>? = null,
     val moveToCorrectLocation: Boolean = false,
     val failure: Event<Throwable>? = null,
-    val openForecastDetail: List<CityId> = emptyList()
+    val openForecastDetail: List<CityId> = emptyList(),
+    val startAutoUpdate: Pair<Boolean, CityInfoDetail>? = null
 )

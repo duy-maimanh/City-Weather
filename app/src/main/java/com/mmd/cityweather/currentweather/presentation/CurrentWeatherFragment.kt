@@ -4,7 +4,9 @@ import android.Manifest
 import android.location.Location
 import android.os.Bundle
 import android.os.Looper
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -19,6 +21,8 @@ import com.google.android.gms.location.*
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.mmd.cityweather.R
+import com.mmd.cityweather.common.MainActivity
+import com.mmd.cityweather.common.domain.model.CityInfoDetail
 import com.mmd.cityweather.common.presentation.Event
 import com.mmd.cityweather.common.presentation.models.UICurrentWeather
 import com.mmd.cityweather.common.presentation.models.UIForecastWeather
@@ -93,6 +97,11 @@ class CurrentWeatherFragment : Fragment() {
             inflater, container, false
         )
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.checkAutoUpdate()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -198,6 +207,17 @@ class CurrentWeatherFragment : Fragment() {
         updateLoadingStatus(state.loading)
         handleMoveToCorrectLocation(state.moveToCorrectLocation)
         handleOpenForecastWeatherDetail(state.openForecastDetail)
+        startUpdateUpdate(state.startAutoUpdate)
+    }
+
+    private fun startUpdateUpdate(isStart: Pair<Boolean, CityInfoDetail>?) {
+        val unHandleCityInfo = isStart ?: return
+
+        if (unHandleCityInfo.first) {
+            (activity as? MainActivity)?.runWeatherUpdate()
+        } else {
+            (activity as? MainActivity)?.closeWeatherUpdate()
+        }
     }
 
     private fun handleOpenForecastWeatherDetail(cityIds: List<CityId>) {
