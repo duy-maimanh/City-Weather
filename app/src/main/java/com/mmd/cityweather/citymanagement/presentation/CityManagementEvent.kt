@@ -6,4 +6,5 @@ sealed class CityManagementEvent {
     data class ChangeMode(val editMode: Boolean) : CityManagementEvent()
     data class UpdateDeleteCityList(val pos: Int, val isDelete: Boolean) :
         CityManagementEvent()
+    data class SelectCity(val pos: Int) : CityManagementEvent()
 }

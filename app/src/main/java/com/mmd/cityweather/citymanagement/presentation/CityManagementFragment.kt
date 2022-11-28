@@ -19,6 +19,10 @@ import com.mmd.cityweather.databinding.FragmentCityManagementBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+/**
+ * Written by Mai Manh Duy 2022
+ * This class use for manage list of city
+ */
 @AndroidEntryPoint
 class CityManagementFragment : Fragment() {
     private lateinit var binding: FragmentCityManagementBinding
@@ -56,6 +60,7 @@ class CityManagementFragment : Fragment() {
     private fun updateScreenState(state: CityManagementViewState) {
         updateListCity(state.cities)
         updateEditMode(state.isEdit)
+        moveToCurrentWeather(state.moveToCurrentWeather)
     }
 
     private fun updateEditMode(isEdit: Boolean) {
@@ -63,6 +68,17 @@ class CityManagementFragment : Fragment() {
         showDeleteButton(isEdit)
         updateToolbar(isEdit)
         updateFabButton(isEdit)
+    }
+
+    // when screen is in edit mode hide fab button
+    private fun updateFabButton(isEditMode: Boolean) {
+        binding.fab.visibility = if (isEditMode) View.GONE else View.VISIBLE
+    }
+
+    private fun moveToCurrentWeather(isMove: Boolean) {
+        if (isMove) {
+            findNavController().navigate(R.id.action_citiesManageFragment_to_currentWeatherFragment)
+        }
     }
 
     private fun initView() {
@@ -74,9 +90,17 @@ class CityManagementFragment : Fragment() {
 
         citiesAdapter = CityManagementAdapter(onDelete = { position, isDelete ->
             viewModel.onEvent(
+                // add city you want delete in to prepare list.
                 CityManagementEvent.UpdateDeleteCityList(position, isDelete)
             )
+        }, onSelect = { position ->
+            viewModel.onEvent(
+                // select city you want to see the current weather and move to current weather screen
+                CityManagementEvent.SelectCity(position)
+            )
         })
+
+        // create decoration what use for add space between each item of recyclerview
         val decoration = DividerItemDecoration(
             requireContext(), DividerItemDecoration.VERTICAL
         )
@@ -85,13 +109,17 @@ class CityManagementFragment : Fragment() {
         )?.let {
             decoration.setDrawable(it)
         }
+
+        // init recyclerview
         with(binding.recyclerviewCities) {
             adapter = citiesAdapter
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(requireContext())
             addItemDecoration(decoration)
         }
+
         binding.fab.setOnClickListener {
+            // Show bottom sheet where user can add city in to city manage list
             findNavController().navigate(R.id.action_citiesManageFragment_to_addCityBottomSheet)
         }
     }
@@ -105,6 +133,7 @@ class CityManagementFragment : Fragment() {
             if (isShow) View.VISIBLE else View.GONE
     }
 
+    // Setup toolbar
     private fun updateToolbar(isEditMode: Boolean) {
         // update title toolbar
         binding.toolbarManageCities.title =
@@ -143,9 +172,5 @@ class CityManagementFragment : Fragment() {
         binding.btnDeleteCity.setOnClickListener {
             viewModel.onEvent(CityManagementEvent.DeleteCity)
         }
-    }
-
-    private fun updateFabButton(isEditMode: Boolean) {
-        binding.fab.visibility = if (isEditMode) View.GONE else View.VISIBLE
     }
 }
