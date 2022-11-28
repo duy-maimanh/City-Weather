@@ -6,6 +6,7 @@
     app:cardElevation="0dp">
 
     <RelativeLayout
+        android:id="@+id/rlManageCity"
         android:layout_width="0dp"
         android:layout_height="80dp"
         android:animateLayoutChanges="true"

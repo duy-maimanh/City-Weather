@@ -3,6 +3,7 @@ package com.mmd.cityweather.citymanagement.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mmd.cityweather.citymanagement.domain.DeleteCityById
+import com.mmd.cityweather.citymanagement.domain.SetSelectedById
 import com.mmd.cityweather.citymanagement.domain.SubscribeCityFromDatabase
 import com.mmd.cityweather.citymanagement.domain.model.UICity
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,6 +22,7 @@ import javax.inject.Inject
 class CityManagementViewModel @Inject constructor(
     private val subscribeCityFromDatabase: SubscribeCityFromDatabase,
     private val deleteCityById: DeleteCityById,
+    private val setSelectedById: SetSelectedById,
     private val compositeDisposable: CompositeDisposable
 ) : ViewModel() {
     private val _state = MutableStateFlow(CityManagementViewState())
@@ -57,9 +59,22 @@ class CityManagementViewModel @Inject constructor(
             is CityManagementEvent.UpdateDeleteCityList -> {
                 _state.value.cities[event.pos].deleted = event.isDelete
             }
+            is CityManagementEvent.SelectCity -> {
+                selectCity(event.pos)
+            }
         }
     }
 
+    // set selected city id to share preferences and move to current weather screen
+    private fun selectCity(pos: Int) {
+        val cityId = _state.value.cities[pos].id
+        setSelectedById.invoke(cityId)
+        _state.update { oldState ->
+            oldState.copy(moveToCurrentWeather = true)
+        }
+    }
+
+    // delete all city which mark ready to delete
     private fun deletedCity() {
         _state.value.cities.filter { it.deleted && !it.isDefault }.map { it.id }
             .let { idList ->

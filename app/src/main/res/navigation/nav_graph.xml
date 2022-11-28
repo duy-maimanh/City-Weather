@@ -73,6 +73,12 @@
         <action
             android:id="@+id/action_citiesManageFragment_to_addCityBottomSheet"
             app:destination="@id/addCityBottomSheet" />
+        <action
+            android:id="@+id/action_citiesManageFragment_to_currentWeatherFragment"
+            app:destination="@id/currentWeatherFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
     </fragment>
     <dialog
         android:id="@+id/addCityBottomSheet"
