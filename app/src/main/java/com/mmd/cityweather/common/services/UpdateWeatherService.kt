@@ -28,7 +28,7 @@ class UpdateWeatherService : Service() {
     private val binder = LocalBinder()
 
     companion object {
-        const val TIME_TO_UPDATE = 1L // minute
+        const val TIME_TO_UPDATE = 30L // minute
     }
 
     private var skipFirstTime = false
