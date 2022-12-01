@@ -4,7 +4,7 @@
     <string name="menu_manage_cities">Cities manage</string>
     <string name="menu_edit">Edit</string>
     <string name="tv_celsius_unit">°C</string>
-    <string name="tv_open_weather_api">Open weather API</string>
+    <string name="tv_open_weather_api">Weather data provided by OpenWeather</string>
     <string name="tv_pressure_description">Pressure</string>
     <string name="tv_visibility_description">Visibility</string>
     <string name="tv_cloudiness">Cloudiness</string>
