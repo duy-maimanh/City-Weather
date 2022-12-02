@@ -92,7 +92,11 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.mmd.cityweather.setting.presentation.SettingsFragment"
-        android:label="SettingsFragment" />
+        android:label="SettingsFragment" >
+        <action
+            android:id="@+id/action_settingsFragment_to_privacyPopupFragment"
+            app:destination="@id/privacyPopupFragment" />
+    </fragment>
     <dialog
         android:id="@+id/privacyPopupFragment"
         android:name="com.mmd.cityweather.privacy.presentation.PrivacyPopupFragment"

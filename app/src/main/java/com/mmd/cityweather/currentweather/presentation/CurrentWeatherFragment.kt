@@ -29,6 +29,7 @@ import com.mmd.cityweather.common.presentation.models.UIForecastWeather
 import com.mmd.cityweather.currentweather.domain.model.CityId
 import com.mmd.cityweather.databinding.FragmentCurrentWeatherBinding
 import com.mmd.cityweather.forecastweatherdetail.presentation.ForecastWeatherAdapter
+import com.mmd.cityweather.privacy.presentation.PrivacyPopupFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -36,11 +37,6 @@ import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class CurrentWeatherFragment : Fragment() {
-    companion object {
-        const val CURRENT_WEATHER_KEY = "current_weather_key"
-        const val APPROVE_LOCATION_KEY = "approve_location_key"
-    }
-
     private lateinit var binding: FragmentCurrentWeatherBinding
     private val viewModel: CurrentWeatherViewModel by viewModels()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -114,6 +110,7 @@ class CurrentWeatherFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         viewModel.checkAutoUpdate()
+        viewModel.checkRequestPermission()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -128,10 +125,10 @@ class CurrentWeatherFragment : Fragment() {
         subscribeToViewStateUpdates()
 
         parentFragmentManager.setFragmentResultListener(
-            CURRENT_WEATHER_KEY,
+            PrivacyPopupFragment.PRIVACY_KEY,
             this
         ) { _, bundle ->
-            val result = bundle.getBoolean(APPROVE_LOCATION_KEY)
+            val result = bundle.getBoolean(PrivacyPopupFragment.APPROVE_LOCATION_KEY)
             if (result) {
                 locationPermissionRequest.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
             }

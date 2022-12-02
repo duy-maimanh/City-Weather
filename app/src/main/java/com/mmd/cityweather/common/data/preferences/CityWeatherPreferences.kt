@@ -28,7 +28,7 @@ class CityWeatherPreferences @Inject constructor(
         PreferenceManager.getDefaultSharedPreferences(context)
 
     override fun putSelectedCityId(id: Long) {
-        edit { putLong(DEFAULT_CITY_ID, id) }
+        editCity { putLong(DEFAULT_CITY_ID, id) }
     }
 
     override fun getSelectedCityId(): Long {
@@ -40,23 +40,30 @@ class CityWeatherPreferences @Inject constructor(
     }
 
     override fun isShowPrivacyExplain(): Boolean {
-        return cityPreference.getBoolean(IS_SHOW_LOCATION_EXPLAIN, false)
+        return settingPreference.getBoolean(IS_SHOW_LOCATION_EXPLAIN, false)
     }
 
     override fun isUserApproveLocation(): Boolean {
-        return cityPreference.getBoolean(IS_USER_APPROVE_LOCATION, false)
+        return settingPreference.getBoolean(IS_USER_APPROVE_LOCATION, false)
     }
 
     override fun setUserApproveLocation(status: Boolean) {
-        edit { putBoolean(IS_USER_APPROVE_LOCATION, status) }
+        editSetting { putBoolean(IS_USER_APPROVE_LOCATION, status) }
     }
 
     override fun setShowPrivacyExplain(status: Boolean) {
-        edit { putBoolean(IS_SHOW_LOCATION_EXPLAIN, status) }
+        editSetting { putBoolean(IS_SHOW_LOCATION_EXPLAIN, status) }
     }
 
-    private inline fun edit(block: SharedPreferences.Editor.() -> Unit) {
+    private inline fun editCity(block: SharedPreferences.Editor.() -> Unit) {
         with(cityPreference.edit()) {
+            block()
+            commit()
+        }
+    }
+
+    private inline fun editSetting(block: SharedPreferences.Editor.() -> Unit) {
+        with(settingPreference.edit()) {
             block()
             commit()
         }

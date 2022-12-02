@@ -73,6 +73,10 @@ class CurrentWeatherViewModel @Inject constructor(
         onAutoUpdate(checkAutoUpdateWeather())
     }
 
+    fun checkRequestPermission() {
+        checkUserApproveLocation()
+    }
+
     private fun getCityInfoByLocation(lat: Double, lon: Double) {
         viewModelScope.launch {
             cityInfoByLocation(lat, lon)?.let { info ->
@@ -186,10 +190,14 @@ class CurrentWeatherViewModel @Inject constructor(
             oldState.copy(isShowLocationExplainDialog = Event(!explainDialogStatus()))
         }
 
-        if (explainDialogStatus()){
-            _state.update { oldState->
-                oldState.copy(isUserApproveForLocation = Event(userApproveLocation()))
-            }
+        if (explainDialogStatus()) {
+            checkUserApproveLocation()
+        }
+    }
+
+    private fun checkUserApproveLocation() {
+        _state.update { oldState ->
+            oldState.copy(isUserApproveForLocation = Event(userApproveLocation()))
         }
     }
 

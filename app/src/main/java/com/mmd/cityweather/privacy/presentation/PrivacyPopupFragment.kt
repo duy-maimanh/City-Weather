@@ -14,6 +14,11 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class PrivacyPopupFragment : DialogFragment() {
+    companion object {
+        const val PRIVACY_KEY = "privacy_key"
+        const val APPROVE_LOCATION_KEY = "approve_location_key"
+    }
+
     private val locationExplainViewModel: LocationExplainViewModel by viewModels()
 
     private lateinit var binding: DialogPrivacyBinding
@@ -35,8 +40,8 @@ class PrivacyPopupFragment : DialogFragment() {
         binding.btnAgree.setOnClickListener {
             locationExplainViewModel.approve()
             setFragmentResult(
-                CurrentWeatherFragment.CURRENT_WEATHER_KEY,
-                bundleOf(CurrentWeatherFragment.APPROVE_LOCATION_KEY to true)
+                PRIVACY_KEY,
+                bundleOf(APPROVE_LOCATION_KEY to true)
             )
             dismiss()
         }
