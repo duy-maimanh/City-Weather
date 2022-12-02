@@ -34,4 +34,5 @@
     <string name="tv_explain_location_title">Explain why we need your location</string>
     <string name="btn_agree">Agree</string>
     <string name="btn_decline">Decline</string>
+    <string name="tv_toolbar_detail_weather">Detail Weather</string>
 </resources>

@@ -54,6 +54,7 @@
             android:id="@+id/scroll_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:scrollbars="none"
             android:clipToPadding="false"
             android:paddingStart="16dp"
             android:paddingEnd="16dp">
@@ -114,6 +115,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/ln_forecast"
                     android:layout_width="match_parent"
+                    android:scrollbars="none"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:orientation="vertical"
