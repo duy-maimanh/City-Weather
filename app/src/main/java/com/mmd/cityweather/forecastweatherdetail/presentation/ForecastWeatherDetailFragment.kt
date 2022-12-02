@@ -9,8 +9,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.mmd.cityweather.R
 import com.mmd.cityweather.common.presentation.Event
 import com.mmd.cityweather.common.presentation.models.UIForecastWeather
 import com.mmd.cityweather.currentweather.presentation.CurrentWeatherViewModel
@@ -53,8 +55,13 @@ class ForecastWeatherDetailFragment : Fragment() {
         val statusBarHeightId =
             resources.getIdentifier("status_bar_height", "dimen", "android")
         val statusBarHeight = resources.getDimensionPixelSize(statusBarHeightId)
-        (binding.recyclerviewForecast.layoutParams as? ViewGroup.MarginLayoutParams)?.topMargin =
+        (binding.toolbar.layoutParams as? ViewGroup.MarginLayoutParams)?.topMargin =
             statusBarHeight
+
+        binding.toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().popBackStack()
+        }
 
         forecastAdapter = ForecastWeatherAdapter()
         with(binding.recyclerviewForecast) {
