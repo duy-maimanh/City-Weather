@@ -1,7 +1,9 @@
 package com.mmd.cityweather.currentweather.presentation
 
 import android.Manifest
+import android.content.Intent
 import android.location.Location
+import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
 import android.view.LayoutInflater
@@ -22,6 +24,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.mmd.cityweather.R
 import com.mmd.cityweather.common.MainActivity
+import com.mmd.cityweather.common.data.api.ApiConstants
 import com.mmd.cityweather.common.domain.model.CityInfoDetail
 import com.mmd.cityweather.common.presentation.Event
 import com.mmd.cityweather.common.presentation.models.UICurrentWeather
@@ -198,6 +201,11 @@ class CurrentWeatherFragment : Fragment() {
                 }
             }
             false
+        }
+        binding.tvWeatherApi.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = Uri.parse(ApiConstants.LICENSE_URL)
+            requireActivity().startActivity(intent)
         }
     }
 
