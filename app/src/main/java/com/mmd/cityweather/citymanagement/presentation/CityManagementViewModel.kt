@@ -3,7 +3,7 @@ package com.mmd.cityweather.citymanagement.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mmd.cityweather.citymanagement.domain.DeleteCityById
-import com.mmd.cityweather.citymanagement.domain.SetSelectedById
+import com.mmd.cityweather.citymanagement.domain.SelectedCityById
 import com.mmd.cityweather.citymanagement.domain.SubscribeCityFromDatabase
 import com.mmd.cityweather.citymanagement.domain.model.UICity
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +22,7 @@ import javax.inject.Inject
 class CityManagementViewModel @Inject constructor(
     private val subscribeCityFromDatabase: SubscribeCityFromDatabase,
     private val deleteCityById: DeleteCityById,
-    private val setSelectedById: SetSelectedById,
+    private val selectedCityById: SelectedCityById,
     private val compositeDisposable: CompositeDisposable
 ) : ViewModel() {
     private val _state = MutableStateFlow(CityManagementViewState())
@@ -36,8 +36,10 @@ class CityManagementViewModel @Inject constructor(
         subscribeCityFromDatabase.invoke().subscribeOn(Schedulers.computation())
             .observeOn(AndroidSchedulers.mainThread()).subscribe({
                 onUpdateCity(it.map { info ->
+                    val isDefault =
+                        info.isAuto || selectedCityById.getSelectedCityId() == info.cityId
                     UICity(
-                        info.cityId, info.name, isDefault = info.isAuto
+                        info.cityId, info.name, isDefault = isDefault
                     )
                 })
             }, {
@@ -68,7 +70,7 @@ class CityManagementViewModel @Inject constructor(
     // set selected city id to share preferences and move to current weather screen
     private fun selectCity(pos: Int) {
         val cityId = _state.value.cities[pos].id
-        setSelectedById.invoke(cityId)
+        selectedCityById.invoke(cityId)
         _state.update { oldState ->
             oldState.copy(moveToCurrentWeather = true)
         }
