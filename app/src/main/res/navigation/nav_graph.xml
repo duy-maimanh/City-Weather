@@ -41,6 +41,9 @@
             app:exitAnim="@anim/exit_from_left"
             app:popEnterAnim="@anim/enter_from_left"
             app:popExitAnim="@anim/exit_from_right" />
+        <action
+            android:id="@+id/action_currentWeatherFragment_to_privacyPopupFragment"
+            app:destination="@id/privacyPopupFragment" />
 
     </fragment>
 
@@ -89,5 +92,13 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.mmd.cityweather.setting.presentation.SettingsFragment"
-        android:label="SettingsFragment" />
+        android:label="SettingsFragment" >
+        <action
+            android:id="@+id/action_settingsFragment_to_privacyPopupFragment"
+            app:destination="@id/privacyPopupFragment" />
+    </fragment>
+    <dialog
+        android:id="@+id/privacyPopupFragment"
+        android:name="com.mmd.cityweather.privacy.presentation.PrivacyPopupFragment"
+        android:label="PrivacyPopupFragment" />
 </navigation>

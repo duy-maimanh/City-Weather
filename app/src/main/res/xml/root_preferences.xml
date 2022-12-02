@@ -8,4 +8,11 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="Location Permission">
+
+        <SwitchPreferenceCompat
+            app:key="is_user_approve_location"
+            app:title="Enable location" />
+    </PreferenceCategory>
+
 </PreferenceScreen>

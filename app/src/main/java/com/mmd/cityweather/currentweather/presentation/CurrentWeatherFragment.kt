@@ -32,6 +32,7 @@ import com.mmd.cityweather.common.presentation.models.UIForecastWeather
 import com.mmd.cityweather.currentweather.domain.model.CityId
 import com.mmd.cityweather.databinding.FragmentCurrentWeatherBinding
 import com.mmd.cityweather.forecastweatherdetail.presentation.ForecastWeatherAdapter
+import com.mmd.cityweather.privacy.presentation.PrivacyPopupFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -89,9 +90,10 @@ class CurrentWeatherFragment : Fragment() {
                         )
                     }
                 }.addOnFailureListener { exception ->
-
+                    println()
                 }
             } else {
+                println()
                 // Permission denied
             }
         }
@@ -111,6 +113,7 @@ class CurrentWeatherFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         viewModel.checkAutoUpdate()
+        viewModel.checkRequestPermission()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -123,7 +126,16 @@ class CurrentWeatherFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewSetup()
         subscribeToViewStateUpdates()
-        locationPermissionRequest.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
+
+        parentFragmentManager.setFragmentResultListener(
+            PrivacyPopupFragment.PRIVACY_KEY,
+            this
+        ) { _, bundle ->
+            val result = bundle.getBoolean(PrivacyPopupFragment.APPROVE_LOCATION_KEY)
+            if (result) {
+                locationPermissionRequest.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
+            }
+        }
     }
 
     private fun viewSetup() {
@@ -228,6 +240,28 @@ class CurrentWeatherFragment : Fragment() {
         handleMoveToCorrectLocation(state.moveToCorrectLocation)
         handleOpenForecastWeatherDetail(state.openForecastDetail)
         startUpdateUpdate(state.startAutoUpdate)
+        showLocationExplainDialog(state.isShowLocationExplainDialog)
+        requestPermissionWhenUserApproveLocationExplain(state.isUserApproveForLocation)
+    }
+
+    private fun requestPermissionWhenUserApproveLocationExplain(
+        status: Event<Boolean>?
+    ) {
+        val unhandleStatus = status?.getContentIfNotHandled() ?: return
+
+        if (unhandleStatus) {
+            locationPermissionRequest.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
+        }
+    }
+
+
+    private fun showLocationExplainDialog(status: Event<Boolean>?) {
+        val unhandleStatus = status?.getContentIfNotHandled() ?: return
+
+        if (unhandleStatus) {
+            findNavController().navigate(R.id.action_currentWeatherFragment_to_privacyPopupFragment)
+            viewModel.markLocationExplainShowed()
+        }
     }
 
     private fun startUpdateUpdate(isStart: Pair<Boolean, CityInfoDetail>?) {

@@ -26,8 +26,12 @@
     <string name="delete_title">Delete</string>
     <string name="management_city_title">City Management</string>
     <string name="no_data">…</string>
+    <string name="location_explain">We need location permission to find your city, thereby providing a weather forecast for that city as quickly as possible. The location of your phone is handled only within it and only your city information is sent over the internet to the weather service.\n\n If you agree with that, press the OK button, otherwise press the decline button.</string>
     <!-- Preference Titles -->
     <string name="update_header">Update Weather</string>
     <!-- Weather Update Preferences -->
     <string name="auto_update_weather_title">Auto update weather (per 30 minutes)</string>
+    <string name="tv_explain_location_title">Explain why we need your location</string>
+    <string name="btn_agree">Agree</string>
+    <string name="btn_decline">Decline</string>
 </resources>

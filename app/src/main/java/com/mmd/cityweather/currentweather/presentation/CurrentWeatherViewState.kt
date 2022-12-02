@@ -15,5 +15,7 @@ data class CurrentWeatherViewState(
     val moveToCorrectLocation: Boolean = false,
     val failure: Event<Throwable>? = null,
     val openForecastDetail: List<CityId> = emptyList(),
-    val startAutoUpdate: Pair<Boolean, CityInfoDetail>? = null
+    val startAutoUpdate: Pair<Boolean, CityInfoDetail>? = null,
+    val isShowLocationExplainDialog: Event<Boolean>? = null,
+    val isUserApproveForLocation: Event<Boolean>? = null
 )

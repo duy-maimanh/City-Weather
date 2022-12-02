@@ -12,6 +12,7 @@ import com.mmd.cityweather.common.presentation.models.UIForecastWeather
 import com.mmd.cityweather.currentweather.domain.*
 import com.mmd.cityweather.currentweather.domain.model.CityId
 import com.mmd.cityweather.forecastweatherdetail.domain.ForecastWeather
+import com.mmd.cityweather.privacy.domain.UserApproveLocation
 import com.mmd.cityweather.splash.domain.InsertDefaultCity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -37,7 +38,9 @@ class CurrentWeatherViewModel @Inject constructor(
     private val compositeDisposable: CompositeDisposable,
     private val getBackgroundForCurrentWeather: GetBackgroundForCurrentWeather,
     private val forecastWeather: ForecastWeather,
-    private val checkAutoUpdateWeather: CheckAutoUpdateWeather
+    private val checkAutoUpdateWeather: CheckAutoUpdateWeather,
+    private val explainDialogStatus: ExplainDialogStatus,
+    private val userApproveLocation: UserApproveLocation
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(CurrentWeatherViewState())
@@ -46,6 +49,7 @@ class CurrentWeatherViewModel @Inject constructor(
 
     init {
         subscribeToSelectedCity()
+        checkShowLocationExplainDialog()
     }
 
     fun onEven(event: CurrentWeatherEvent) {
@@ -67,6 +71,10 @@ class CurrentWeatherViewModel @Inject constructor(
 
     fun checkAutoUpdate() {
         onAutoUpdate(checkAutoUpdateWeather())
+    }
+
+    fun checkRequestPermission() {
+        checkUserApproveLocation()
     }
 
     private fun getCityInfoByLocation(lat: Double, lon: Double) {
@@ -96,7 +104,8 @@ class CurrentWeatherViewModel @Inject constructor(
 
     private fun requestCurrentWeather() {
         onLoadingStatus(true)
-        val exception = viewModelScope.createExceptionHandler("Network error", ::onFailure)
+        val exception =
+            viewModelScope.createExceptionHandler("Network error", ::onFailure)
         viewModelScope.launch(exception) {
             requestCurrentWeather(
                 selectedCityInfo.cityId,
@@ -173,6 +182,27 @@ class CurrentWeatherViewModel @Inject constructor(
             }, {
                 onFailure(it)
             }).addTo(compositeDisposable)
+    }
+
+    // if explainDialogStatus true, that mean it showed.
+    private fun checkShowLocationExplainDialog() {
+        _state.update { oldState ->
+            oldState.copy(isShowLocationExplainDialog = Event(!explainDialogStatus()))
+        }
+
+        if (explainDialogStatus()) {
+            checkUserApproveLocation()
+        }
+    }
+
+    private fun checkUserApproveLocation() {
+        _state.update { oldState ->
+            oldState.copy(isUserApproveForLocation = Event(userApproveLocation()))
+        }
+    }
+
+    fun markLocationExplainShowed() {
+        explainDialogStatus.set(true)
     }
 
     private fun onLoadingStatus(
