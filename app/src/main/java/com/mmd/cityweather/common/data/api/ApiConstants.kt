@@ -8,6 +8,7 @@ object ApiConstants {
     const val DEFAULT_UNIT = "metric"
     const val BASE_IMAGE_URL = "http://openweathermap.org/img/wn/"
     const val IMAGE_SUFFIX = "@2x.png"
+    const val LICENSE_URL = "https://openweathermap.org/"
 }
 
 object ApiParameters {
