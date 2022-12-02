@@ -9,6 +9,7 @@ interface CityRepository {
     suspend fun isExist(): Boolean
     suspend fun getDefaultCity(): CityInfoDetail
     fun setSelectedCity(cityId: Long)
+    fun getSelectedCityId(): Long
     fun getSelectedCityInfo(): Flowable<CityInfoDetail>
     suspend fun getAllCityInfoOnDisk(): List<CityInfoDetail>
     suspend fun deleteCityById(cityId: Long)

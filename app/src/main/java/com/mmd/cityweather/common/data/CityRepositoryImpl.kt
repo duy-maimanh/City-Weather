@@ -73,9 +73,12 @@ class CityRepositoryImpl @Inject constructor(
         cityPreferences.putSelectedCityId(cityId)
     }
 
+    override fun getSelectedCityId(): Long {
+       return cityPreferences.getSelectedCityId()
+    }
+
     override fun getSelectedCityInfo(): Flowable<CityInfoDetail> {
-        val id = cityPreferences.getSelectedCityId()
-        return getCityInformation(id)
+        return getCityInformation(getSelectedCityId())
     }
 
     override suspend fun getAllCityInfoOnDisk(): List<CityInfoDetail> {

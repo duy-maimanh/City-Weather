@@ -39,6 +39,8 @@ class CityManagementAdapter(
             // set view
             binding.checkboxRemoveCity.visibility =
                 if (isEditMode && !city.isDefault) View.VISIBLE else View.GONE
+            binding.tvCannotDeleteCity.visibility =
+                if (isEditMode && city.isDefault) View.VISIBLE else View.GONE
             binding.tvCityName.text = city.name
             binding.checkboxRemoveCity.isChecked = city.deleted
         }

@@ -35,4 +35,5 @@
     <string name="btn_agree">Agree</string>
     <string name="btn_decline">Decline</string>
     <string name="tv_toolbar_detail_weather">Detail Weather</string>
+    <string name="tv_cannot_delete_city">You cannot delete this city because it is already selected or it is the default city.</string>
 </resources>
