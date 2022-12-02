@@ -7,4 +7,12 @@ interface Preferences {
     fun getSelectedCityId(): Long
 
     fun getAutoUpdateWeatherStatus(): Boolean
+
+    fun isShowPrivacyExplain(): Boolean
+
+    fun isUserApproveLocation(): Boolean
+
+    fun setShowPrivacyExplain(status : Boolean)
+
+    fun setUserApproveLocation(status: Boolean)
 }

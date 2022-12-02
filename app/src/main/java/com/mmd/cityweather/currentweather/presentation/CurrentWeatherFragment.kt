@@ -36,6 +36,11 @@ import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class CurrentWeatherFragment : Fragment() {
+    companion object {
+        const val CURRENT_WEATHER_KEY = "current_weather_key"
+        const val APPROVE_LOCATION_KEY = "approve_location_key"
+    }
+
     private lateinit var binding: FragmentCurrentWeatherBinding
     private val viewModel: CurrentWeatherViewModel by viewModels()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -54,43 +59,50 @@ class CurrentWeatherFragment : Fragment() {
                             )
                         )
                     } else {
-                        val locationRequest: LocationRequest = LocationRequest().setPriority(
-                            LocationRequest.PRIORITY_LOW_POWER
-                        ).setInterval(10000).setFastestInterval(
-                            1000
-                        ).setNumUpdates(1)
+                        val locationRequest: LocationRequest =
+                            LocationRequest().setPriority(
+                                LocationRequest.PRIORITY_LOW_POWER
+                            ).setInterval(10000).setFastestInterval(
+                                1000
+                            ).setNumUpdates(1)
 
 
                         // Initialize location call back
-                        val locationCallback: LocationCallback = object : LocationCallback() {
-                            override fun onLocationResult(
-                                locationResult: LocationResult
-                            ) {
-                                // Initialize
-                                // location
-                                val location1: Location = locationResult.lastLocation ?: return
-                                viewModel.onEven(
-                                    CurrentWeatherEvent.ChangeNewLocation(
-                                        location1.latitude, location1.longitude
+                        val locationCallback: LocationCallback =
+                            object : LocationCallback() {
+                                override fun onLocationResult(
+                                    locationResult: LocationResult
+                                ) {
+                                    // Initialize
+                                    // location
+                                    val location1: Location =
+                                        locationResult.lastLocation ?: return
+                                    viewModel.onEven(
+                                        CurrentWeatherEvent.ChangeNewLocation(
+                                            location1.latitude,
+                                            location1.longitude
+                                        )
                                     )
-                                )
+                                }
                             }
-                        }
                         // Request location updates
                         fusedLocationClient.requestLocationUpdates(
                             locationRequest, locationCallback, Looper.myLooper()
                         )
                     }
                 }.addOnFailureListener { exception ->
-
+                    println()
                 }
             } else {
+                println()
                 // Permission denied
             }
         }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentCurrentWeatherBinding.inflate(
@@ -106,21 +118,33 @@ class CurrentWeatherFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        fusedLocationClient =
+            LocationServices.getFusedLocationProviderClient(requireActivity())
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewSetup()
         subscribeToViewStateUpdates()
-        locationPermissionRequest.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
+
+        parentFragmentManager.setFragmentResultListener(
+            CURRENT_WEATHER_KEY,
+            this
+        ) { _, bundle ->
+            val result = bundle.getBoolean(APPROVE_LOCATION_KEY)
+            if (result) {
+                locationPermissionRequest.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
+            }
+        }
     }
 
     private fun viewSetup() {
         //  set content's position below status bar.
-        val statusBarHeightId = resources.getIdentifier("status_bar_height", "dimen", "android")
+        val statusBarHeightId =
+            resources.getIdentifier("status_bar_height", "dimen", "android")
         val statusBarHeight = resources.getDimensionPixelSize(statusBarHeightId)
-        (binding.appBar.layoutParams as? MarginLayoutParams)?.topMargin = statusBarHeight
+        (binding.appBar.layoutParams as? MarginLayoutParams)?.topMargin =
+            statusBarHeight
         var toolbarBottomLineMargin = 0
         (binding.toolBarBottomLine.layoutParams as? MarginLayoutParams)?.let {
             toolbarBottomLineMargin = it.topMargin + statusBarHeight
@@ -135,14 +159,17 @@ class CurrentWeatherFragment : Fragment() {
             val appBarHeight = appBarLayout!!.measuredHeight
             val screenBackgroundAlpha =
                 (appBarHeight.toFloat() - toolBarHeight + verticalOffset) / (appBarHeight.toFloat() - toolBarHeight) * 255
-            binding.coordinatorLayout.background.alpha = screenBackgroundAlpha.roundToInt()
+            binding.coordinatorLayout.background.alpha =
+                screenBackgroundAlpha.roundToInt()
 
 
-            val toolbarAlphaStartPosition = (appBarHeight.toFloat() - toolBarHeight) * 0.45f
+            val toolbarAlphaStartPosition =
+                (appBarHeight.toFloat() - toolBarHeight) * 0.45f
             if (verticalOffset <= -toolbarAlphaStartPosition) {
                 val toolbarBackgroundAlpha =
                     ((toolbarAlphaStartPosition + verticalOffset) / toolbarAlphaStartPosition) * 255
-                binding.toolBarBottomLine.background.alpha = -toolbarBackgroundAlpha.roundToInt()
+                binding.toolBarBottomLine.background.alpha =
+                    -toolbarBackgroundAlpha.roundToInt()
             } else {
                 binding.toolBarBottomLine.background.alpha = 0
             }
@@ -208,6 +235,28 @@ class CurrentWeatherFragment : Fragment() {
         handleMoveToCorrectLocation(state.moveToCorrectLocation)
         handleOpenForecastWeatherDetail(state.openForecastDetail)
         startUpdateUpdate(state.startAutoUpdate)
+        showLocationExplainDialog(state.isShowLocationExplainDialog)
+        requestPermissionWhenUserApproveLocationExplain(state.isUserApproveForLocation)
+    }
+
+    private fun requestPermissionWhenUserApproveLocationExplain(
+        status: Event<Boolean>?
+    ) {
+        val unhandleStatus = status?.getContentIfNotHandled() ?: return
+
+        if (unhandleStatus) {
+            locationPermissionRequest.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
+        }
+    }
+
+
+    private fun showLocationExplainDialog(status: Event<Boolean>?) {
+        val unhandleStatus = status?.getContentIfNotHandled() ?: return
+
+        if (unhandleStatus) {
+            findNavController().navigate(R.id.action_currentWeatherFragment_to_privacyPopupFragment)
+            viewModel.markLocationExplainShowed()
+        }
     }
 
     private fun startUpdateUpdate(isStart: Pair<Boolean, CityInfoDetail>?) {
@@ -261,13 +310,15 @@ class CurrentWeatherFragment : Fragment() {
                 appBar.title = it.cityName
                 tvDegree.text = it.temp.roundToInt().toString()
                 tvFeelLikeDegree.text = String.format(
-                    getString(R.string.tv_temp), it.tempFeelLike.roundToInt().toString()
+                    getString(R.string.tv_temp),
+                    it.tempFeelLike.roundToInt().toString()
                 )
                 tvHumidity.text = String.format(
                     getString(R.string.tv_humidity), it.humidity.toString()
                 )
                 tvWindSpeed.text = String.format(
-                    getString(R.string.tv_wind_speed), it.windSpeed.roundToInt().toString()
+                    getString(R.string.tv_wind_speed),
+                    it.windSpeed.roundToInt().toString()
                 )
                 tvCloudiness.text = String.format(
                     getString(R.string.tv_humidity), it.cloudiness.toString()
@@ -295,7 +346,8 @@ class CurrentWeatherFragment : Fragment() {
         }
 
         if (snackbarMessage.isNotEmpty()) {
-            Snackbar.make(requireView(), snackbarMessage, Snackbar.LENGTH_LONG).show()
+            Snackbar.make(requireView(), snackbarMessage, Snackbar.LENGTH_LONG)
+                .show()
         }
         updateLoadingStatus(false)
     }

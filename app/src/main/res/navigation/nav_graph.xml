@@ -95,6 +95,6 @@
         android:label="SettingsFragment" />
     <dialog
         android:id="@+id/privacyPopupFragment"
-        android:name="com.mmd.cityweather.privacy.PrivacyPopupFragment"
+        android:name="com.mmd.cityweather.privacy.presentation.PrivacyPopupFragment"
         android:label="PrivacyPopupFragment" />
 </navigation>
