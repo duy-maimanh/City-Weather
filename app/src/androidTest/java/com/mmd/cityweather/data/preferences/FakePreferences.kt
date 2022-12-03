@@ -16,4 +16,24 @@ class FakePreferences : Preferences {
     override fun getSelectedCityId(): Long {
         return preferences[DEFAULT_CITY_ID] as Long
     }
+
+    override fun getAutoUpdateWeatherStatus(): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun isShowPrivacyExplain(): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun isUserApproveLocation(): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun setShowPrivacyExplain(status: Boolean) {
+        TODO("Not yet implemented")
+    }
+
+    override fun setUserApproveLocation(status: Boolean) {
+        TODO("Not yet implemented")
+    }
 }
