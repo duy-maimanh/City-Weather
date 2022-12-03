@@ -27,32 +27,38 @@ All data from internet will be saved to local database and view will observer fr
 ## Images
 <table>
 	<tr>
-    	<th>![Splash](screenshots/splash.png)</th>
-    	<th>![Dialog ask for permission](screenshots/main_0.png)</th>
-    	<th>![Request permission dialog](screenshots/permission.png)</th>
+    	<th><img src="screenshots/splash.png"/></th>
+    	<th><img src="screenshots/main_0.png"/></th>
+    	<th><img src="screenshots/permission.png"/></th>
 	</tr>
 	<tr>
-    	<th>![Main screen](screenshots/main_1.png)</th>
-    	<th>![Main screen scroll down](screenshots/main_2.png)</th>
-    	<th>![Detail weather screen](screenshots/detail.png)</th>
-	</tr>
-<tr>
-    	<th>![Management screen](screenshots/manage.png)</th>
-    	<th>![Management screen 2](screenshots/manage_4.png)</th>
-    	<th>![Edit city screen](screenshots/manage_5.png)</th>
-	</tr>
-<tr>
-    	<th>![Add city screen](screenshots/manage_2.png)</th>
-    	<th>![Search city screen](screenshots/manage_3.png)</th>
-    	<th>![Setting city screen](screenshots/setting_1.png)</th>
+    	<th><img src="screenshots/main_1.png"/></th>
+    	<th><img src="screenshots/main_2.png"/></th>
+    	<th><img src="screenshots/detail.png"/></th>
 	</tr>
 	<tr>
-    	<th>![Setting city ask screen](screenshots/setting_2.png)</th>
+    	<th><img src="screenshots/manage.png"/></th>
+    	<th><img src="screenshots/manage_4.png"/></th>
+    	<th><img src="screenshots/manage_5.png"/></th>
+	</tr>
+	<tr>
+    	<th><img src="screenshots/manage_2.png"/></th>
+    	<th><img src="screenshots/manage_3.png"/></th>
+    	<th><img src="screenshots/setting_1.png"/></th>
+	</tr>
+	<tr>
+    	<th><img src="screenshots/setting_2.png"/></th>
 	</tr>
 </table>
 
-## Features:
+## Features
 - Current weather.
+- Background color change by weather or time.
 - Forecast weather.
 - Management cities.
 - Auto update weather per 30 minutes.
+
+## To-do
+- There are around 20% code coverage, so we need write more test in future.
+- Update animation when add and delete city in management screen.
+- ...
