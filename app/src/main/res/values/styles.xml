@@ -35,4 +35,9 @@
         <item name="android:windowFrame">@null</item>
         <item name="android:windowIsFloating">true</item>
     </style>
+    
+    <style name="CityManagementCheckBox" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">#FFFFFF</item>
+        <item name="colorControlActivated">#72FFFFFF</item>
+    </style>
 </resources>

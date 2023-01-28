@@ -36,10 +36,11 @@ class CityManagementViewModel @Inject constructor(
         subscribeCityFromDatabase.invoke().subscribeOn(Schedulers.computation())
             .observeOn(AndroidSchedulers.mainThread()).subscribe({
                 onUpdateCity(it.map { info ->
-                    val isDefault =
-                        info.isAuto || selectedCityById.getSelectedCityId() == info.cityId
                     UICity(
-                        info.cityId, info.name, isDefault = isDefault
+                        info.cityId,
+                        info.name,
+                        isAuto = info.isAuto,
+                        isSelected = selectedCityById.getSelectedCityId() == info.cityId
                     )
                 })
             }, {
@@ -78,7 +79,7 @@ class CityManagementViewModel @Inject constructor(
 
     // delete all city which mark ready to delete
     private fun deletedCity() {
-        _state.value.cities.filter { it.deleted && !it.isDefault }.map { it.id }
+        _state.value.cities.filter { it.deleted && !it.isAuto && !it.isSelected }.map { it.id }
             .let { idList ->
                 viewModelScope.launch {
                     deleteCityById.invoke(idList)

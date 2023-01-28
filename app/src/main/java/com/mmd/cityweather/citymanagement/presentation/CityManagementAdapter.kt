@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.mmd.cityweather.R
 import com.mmd.cityweather.citymanagement.domain.model.UICity
 import com.mmd.cityweather.databinding.ItemManageCityBinding
 
@@ -37,12 +38,21 @@ class CityManagementAdapter(
 
         fun bind(city: UICity) {
             // set view
-            binding.checkboxRemoveCity.visibility =
-                if (isEditMode && !city.isDefault) View.VISIBLE else View.GONE
+            binding.checkboxRemoveCity.visibility = if (isEditMode) View.VISIBLE else View.GONE
+            binding.checkboxRemoveCity.isEnabled = !city.isAuto && !city.isSelected
+
             binding.tvCannotDeleteCity.visibility =
-                if (isEditMode && city.isDefault) View.VISIBLE else View.GONE
+                if (isEditMode && (city.isAuto || city.isSelected)) View.VISIBLE else View.GONE
             binding.tvCityName.text = city.name
             binding.checkboxRemoveCity.isChecked = city.deleted
+            val drawableIcon = if (city.isAuto) {
+                R.drawable.ic_baseline_location_on_24
+            } else if (city.isSelected) {
+                R.drawable.ic_baseline_radio_button_checked_24
+            } else {
+                0
+            }
+            binding.tvCityName.setCompoundDrawablesWithIntrinsicBounds(drawableIcon, 0, 0, 0)
         }
     }
 

@@ -10,7 +10,7 @@ abstract class CitiesDao {
     @Query("SELECT * FROM cities WHERE cityId = :cityId")
     abstract fun getInfoCity(cityId: Long): Flowable<Cities>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract fun insertCity(cities: Cities)
 
     @Transaction
