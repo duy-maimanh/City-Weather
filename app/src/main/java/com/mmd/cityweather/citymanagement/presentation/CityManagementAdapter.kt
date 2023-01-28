@@ -38,27 +38,21 @@ class CityManagementAdapter(
 
         fun bind(city: UICity) {
             // set view
-            binding.checkboxRemoveCity.visibility =
-                if (isEditMode && !city.isAuto && !city.isSelected) View.VISIBLE else View.GONE
+            binding.checkboxRemoveCity.visibility = if (isEditMode) View.VISIBLE else View.GONE
+            binding.checkboxRemoveCity.isEnabled = !city.isAuto && !city.isSelected
+
             binding.tvCannotDeleteCity.visibility =
                 if (isEditMode && (city.isAuto || city.isSelected)) View.VISIBLE else View.GONE
             binding.tvCityName.text = city.name
             binding.checkboxRemoveCity.isChecked = city.deleted
-            if (city.isAuto) {
-                binding.tvCityName.setCompoundDrawablesWithIntrinsicBounds(
-                    R.drawable.ic_baseline_location_on_24,
-                    0,
-                    0,
-                    0
-                )
+            val drawableIcon = if (city.isAuto) {
+                R.drawable.ic_baseline_location_on_24
             } else if (city.isSelected) {
-                binding.tvCityName.setCompoundDrawablesWithIntrinsicBounds(
-                    R.drawable.ic_baseline_radio_button_checked_24,
-                    0,
-                    0,
-                    0
-                )
+                R.drawable.ic_baseline_radio_button_checked_24
+            } else {
+                0
             }
+            binding.tvCityName.setCompoundDrawablesWithIntrinsicBounds(drawableIcon, 0, 0, 0)
         }
     }
 
