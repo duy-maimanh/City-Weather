@@ -91,6 +91,14 @@ dependencies {
     androidTestImplementation "com.google.dagger:hilt-android-testing:2.38.1"
     kaptAndroidTest "com.google.dagger:hilt-android-compiler:2.38.1"
 
+    implementation 'androidx.hilt:hilt-work:1.0.0'
+    // When using Kotlin.
+    kapt 'androidx.hilt:hilt-compiler:1.0.0'
+
+    // workmanager
+    def work_version = "2.7.1"
+    implementation "androidx.work:work-runtime-ktx:$work_version"
+
     // csv reader
     implementation 'com.opencsv:opencsv:4.6'
 

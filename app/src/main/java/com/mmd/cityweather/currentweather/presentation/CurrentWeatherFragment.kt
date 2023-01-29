@@ -268,9 +268,9 @@ class CurrentWeatherFragment : Fragment() {
         val unHandleCityInfo = isStart ?: return
 
         if (unHandleCityInfo.first) {
-            (activity as? MainActivity)?.runWeatherUpdate()
+//            (activity as? MainActivity)?.runWeatherUpdate()
         } else {
-            (activity as? MainActivity)?.closeWeatherUpdate()
+//            (activity as? MainActivity)?.closeWeatherUpdate()
         }
     }
 

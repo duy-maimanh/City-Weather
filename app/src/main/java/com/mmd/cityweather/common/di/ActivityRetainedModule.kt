@@ -18,24 +18,6 @@ import io.reactivex.disposables.CompositeDisposable
 @InstallIn(ActivityRetainedComponent::class)
 abstract class ActivityRetainedModule {
 
-    @Binds
-    @ActivityRetainedScoped
-    abstract fun bindCurrentWeatherRepository(
-        repositoryImpl: CurrentWeatherRepositoryImpl
-    ): CurrentWeatherRepository
-
-    @Binds
-    @ActivityRetainedScoped
-    abstract fun bindCityRepository(
-        repositoryImpl: CityRepositoryImpl
-    ): CityRepository
-
-    @Binds
-    @ActivityRetainedScoped
-    abstract fun bindForecastWeatherRepository(
-        repositoryImpl: ForecastWeatherRepositoryImpl
-    ): ForecastWeatherRepository
-
     companion object {
         @Provides
         fun provideCompositeDisposable() = CompositeDisposable()
