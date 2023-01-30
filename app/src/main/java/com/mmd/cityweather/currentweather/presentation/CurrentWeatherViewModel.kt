@@ -257,7 +257,7 @@ class CurrentWeatherViewModel @Inject constructor(
     private fun onAutoUpdate(isStart: Boolean) {
         if (this::selectedCityInfo.isInitialized) {
             _state.update { oldState ->
-                oldState.copy(startAutoUpdate = Pair(isStart, selectedCityInfo))
+                oldState.copy(startAutoUpdate = Event(Pair(isStart, selectedCityInfo)))
             }
         }
     }
