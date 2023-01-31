@@ -155,6 +155,7 @@ class CurrentWeatherViewModel @Inject constructor(
             )
         }.subscribeOn(Schedulers.computation())
             .observeOn(AndroidSchedulers.mainThread()).subscribe({
+                Log.d("current_weather_update","update current")
                 onNewWeather(it)
             }, {
                 onFailure(it)
@@ -257,7 +258,7 @@ class CurrentWeatherViewModel @Inject constructor(
     private fun onAutoUpdate(isStart: Boolean) {
         if (this::selectedCityInfo.isInitialized) {
             _state.update { oldState ->
-                oldState.copy(startAutoUpdate = Pair(isStart, selectedCityInfo))
+                oldState.copy(startAutoUpdate = Event(Pair(isStart, selectedCityInfo)))
             }
         }
     }

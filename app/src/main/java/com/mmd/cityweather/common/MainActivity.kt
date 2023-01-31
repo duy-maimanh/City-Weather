@@ -1,12 +1,7 @@
 package com.mmd.cityweather.common
 
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
 import android.os.Build
 import android.os.Bundle
-import android.os.IBinder
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.WindowManager
@@ -14,11 +9,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.fragment.NavHostFragment
+import androidx.work.*
 import com.mmd.cityweather.R
-import com.mmd.cityweather.common.services.UpdateWeatherService
+import com.mmd.cityweather.common.workers.UpdateWeatherWorker
 import com.mmd.cityweather.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 import dev.chrisbanes.insetter.applyInsetter
+import java.util.concurrent.TimeUnit
 
 
 @AndroidEntryPoint
@@ -66,8 +63,7 @@ class MainActivity : AppCompatActivity() {
                     content.viewTreeObserver.removeOnPreDrawListener(this)
                     val navHostFragment =
                         supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
-                    navHostFragment.navController
-                        .navigate(R.id.action_splashFragment_to_currentWeatherFragment)
+                    navHostFragment.navController.navigate(R.id.action_splashFragment_to_currentWeatherFragment)
                     true
                 } else {
                     false
@@ -81,43 +77,26 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private var updateWeatherService: UpdateWeatherService? = null
-    private var mBound: Boolean = false
-
-    /** Defines callbacks for service binding, passed to bindService()  */
-    private val connection = object : ServiceConnection {
-
-        override fun onServiceConnected(className: ComponentName, service: IBinder) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
-            val binder = service as UpdateWeatherService.LocalBinder
-            updateWeatherService = binder.getService()
-            updateWeatherService?.startUpdate()
-            mBound = true
-        }
-
-        override fun onServiceDisconnected(arg0: ComponentName) {
-            mBound = false
-        }
-    }
+    // only run worker if the network status is connected.
+    private val updateWeatherTag = "update_weather"
+    private val updateWeatherConstraints =
+        Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+    private val periodicUpdateWeatherRequest =
+        PeriodicWorkRequestBuilder<UpdateWeatherWorker>(
+            30, TimeUnit.MINUTES, 5, TimeUnit.MINUTES
+        ).addTag(updateWeatherTag).setConstraints(updateWeatherConstraints)
+            .build()
 
     fun runWeatherUpdate() {
-        if (!mBound) {
-            Intent(this, UpdateWeatherService::class.java).also { intent ->
-                bindService(intent, connection, Context.BIND_AUTO_CREATE)
-            }
-        }
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+            updateWeatherTag,
+            ExistingPeriodicWorkPolicy.KEEP,
+            periodicUpdateWeatherRequest
+        )
     }
 
     fun closeWeatherUpdate() {
-        if (mBound) {
-            updateWeatherService?.stopUpdate()
-            unbindService(connection)
-            mBound = false
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        closeWeatherUpdate()
+        WorkManager.getInstance(this).cancelAllWorkByTag(updateWeatherTag)
     }
 }

@@ -31,9 +31,11 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".common.services.UpdateWeatherService"
-            android:enabled="true" />
+        <!-- If you want to disable android.startup completely. -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            tools:node="remove" />
     </application>
 
 </manifest>

@@ -264,8 +264,8 @@ class CurrentWeatherFragment : Fragment() {
         }
     }
 
-    private fun startUpdateUpdate(isStart: Pair<Boolean, CityInfoDetail>?) {
-        val unHandleCityInfo = isStart ?: return
+    private fun startUpdateUpdate(isStart: Event<Pair<Boolean, CityInfoDetail>>?) {
+        val unHandleCityInfo = isStart?.getContentIfNotHandled() ?: return
 
         if (unHandleCityInfo.first) {
             (activity as? MainActivity)?.runWeatherUpdate()
