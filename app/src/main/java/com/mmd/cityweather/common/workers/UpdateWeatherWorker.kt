@@ -1,20 +1,15 @@
-package com.mmd.cityweather.common.services
+package com.mmd.cityweather.common.workers
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
-import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.mmd.cityweather.common.domain.model.CityInfoDetail
 import com.mmd.cityweather.common.domain.repositories.CityRepository
 import com.mmd.cityweather.common.domain.repositories.CurrentWeatherRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.runBlocking
 
 @HiltWorker
@@ -31,16 +26,16 @@ class UpdateWeatherWorker @AssistedInject constructor(
             runBlocking {
                 val cityInfoDetail: CityInfoDetail =
                     cityRepository.getSelectedCityInfo().blockingFirst()
-                currentWeatherRepository.requestNewCurrentWeather(
-                    cityInfoDetail.cityId,
-                    cityInfoDetail.lat,
-                    cityInfoDetail.lon
-                )
-                Log.d("Worker update", "run success")
+                val currentWeather =
+                    currentWeatherRepository.requestNewCurrentWeather(
+                        cityInfoDetail.cityId,
+                        cityInfoDetail.lat,
+                        cityInfoDetail.lon
+                    )
+                currentWeatherRepository.storeCurrentWeather(currentWeather)
                 Result.success()
             }
         } catch (e: Exception) {
-            Log.d("Worker update", "run failure")
             Result.failure()
         }
     }

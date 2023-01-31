@@ -155,6 +155,7 @@ class CurrentWeatherViewModel @Inject constructor(
             )
         }.subscribeOn(Schedulers.computation())
             .observeOn(AndroidSchedulers.mainThread()).subscribe({
+                Log.d("current_weather_update","update current")
                 onNewWeather(it)
             }, {
                 onFailure(it)
