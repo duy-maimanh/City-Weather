@@ -82,8 +82,8 @@ class AddCityBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun initView() {
-        binding.edtSearchQuery.doOnTextChanged { _, _, _, count ->
-            changeModeRecommend(count == 0)
+        binding.edtSearchQuery.doOnTextChanged { chars, _, _, _ ->
+            changeModeRecommend(chars.isNullOrEmpty())
         }
         binding.edtSearchQuery.setOnEditorActionListener { textView, actionId, keyEvent ->
             when (actionId) {
@@ -135,9 +135,15 @@ class AddCityBottomSheet : BottomSheetDialogFragment() {
                     updateTopCityList(it.topCity)
                     addCityDone(it.addCityDone)
                     updateListSearchCity(it.searchCity)
+                    updateSearchProgressStatus(it.searchStatus)
                 }
             }
         }
+    }
+
+    private fun updateSearchProgressStatus(status: Boolean) {
+        binding.progressSearch.visibility =
+            if (status) View.VISIBLE else View.GONE
     }
 
     private fun updateListSearchCity(searchedCities: List<UICity>) {
