@@ -76,8 +76,12 @@ class AddCityBottomSheetViewModel @Inject constructor(
 
     private fun searchCity(searchQuery: String) {
         viewModelScope.launch(Dispatchers.IO) {
+            _state.update { oldState ->
+                oldState.copy(searchStatus = true)
+            }
             val results = cityFromDisk.filter {
-                it.ascii?.lowercase()?.contains(searchQuery.lowercase()) ?: false
+                it.ascii?.lowercase()?.contains(searchQuery.lowercase())
+                    ?: false
             }
                 .filterNot { searched -> searched.cityId in getAllCityFromDatabase().map { database -> database.cityId } }
                 .map {
@@ -86,7 +90,7 @@ class AddCityBottomSheetViewModel @Inject constructor(
                     )
                 }
             _state.update { oldState ->
-                oldState.copy(searchCity = results)
+                oldState.copy(searchCity = results, searchStatus = false)
             }
         }
     }
