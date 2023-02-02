@@ -48,7 +48,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun initToolbar(view: View) {
         toolbar = view.findViewById(R.id.toolbar)
-
         val statusBarHeightId =
             resources.getIdentifier("status_bar_height", "dimen", "android")
         val statusBarHeight = resources.getDimensionPixelSize(statusBarHeightId)

@@ -12,6 +12,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.work.*
 import com.mmd.cityweather.R
 import com.mmd.cityweather.common.workers.UpdateWeatherWorker
+import com.mmd.cityweather.common.workers.WorkerSettings
 import com.mmd.cityweather.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 import dev.chrisbanes.insetter.applyInsetter
@@ -78,25 +79,29 @@ class MainActivity : AppCompatActivity() {
 
 
     // only run worker if the network status is connected.
-    private val updateWeatherTag = "update_weather"
     private val updateWeatherConstraints =
         Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
     private val periodicUpdateWeatherRequest =
         PeriodicWorkRequestBuilder<UpdateWeatherWorker>(
-            30, TimeUnit.MINUTES, 5, TimeUnit.MINUTES
-        ).addTag(updateWeatherTag).setConstraints(updateWeatherConstraints)
+            WorkerSettings.UPDATE_WEATHER_TIME,
+            TimeUnit.MINUTES,
+            WorkerSettings.WORKER_DEFAULT_FLEXTIME,
+            TimeUnit.MINUTES
+        ).addTag(WorkerSettings.UPDATE_WEATHER_TAG_NAME)
+            .setConstraints(updateWeatherConstraints)
             .build()
 
     fun runWeatherUpdate() {
         WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-            updateWeatherTag,
+            WorkerSettings.UPDATE_WEATHER_TAG_NAME,
             ExistingPeriodicWorkPolicy.KEEP,
             periodicUpdateWeatherRequest
         )
     }
 
     fun closeWeatherUpdate() {
-        WorkManager.getInstance(this).cancelAllWorkByTag(updateWeatherTag)
+        WorkManager.getInstance(this)
+            .cancelAllWorkByTag(WorkerSettings.UPDATE_WEATHER_TAG_NAME)
     }
 }
