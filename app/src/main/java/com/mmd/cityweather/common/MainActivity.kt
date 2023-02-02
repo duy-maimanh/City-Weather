@@ -1,3 +1,19 @@
+/*
+ * Developed by 2022 Duy Mai.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.mmd.cityweather.common
 
 import android.os.Build
@@ -9,7 +25,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.fragment.NavHostFragment
-import androidx.work.*
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.mmd.cityweather.R
 import com.mmd.cityweather.common.workers.UpdateWeatherWorker
 import com.mmd.cityweather.common.workers.WorkerSettings
@@ -17,7 +37,6 @@ import com.mmd.cityweather.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 import dev.chrisbanes.insetter.applyInsetter
 import java.util.concurrent.TimeUnit
-
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -38,7 +57,7 @@ class MainActivity : AppCompatActivity() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             window.attributes.layoutInDisplayCutoutMode =
-                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
         }
 
         // Icons set by the Splashscreen API do not work when starting an app from Android Studio. If the app gets closed and then restarted, the icon shows correctly.
@@ -58,25 +77,24 @@ class MainActivity : AppCompatActivity() {
     private fun setupSplashScreen(splashScreen: SplashScreen) {
         val content: View = findViewById(android.R.id.content)
         content.viewTreeObserver.addOnPreDrawListener(object :
-            ViewTreeObserver.OnPreDrawListener {
-            override fun onPreDraw(): Boolean {
-                return if (hasData) {
-                    content.viewTreeObserver.removeOnPreDrawListener(this)
-                    val navHostFragment =
-                        supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
-                    navHostFragment.navController.navigate(R.id.action_splashFragment_to_currentWeatherFragment)
-                    true
-                } else {
-                    false
+                ViewTreeObserver.OnPreDrawListener {
+                override fun onPreDraw(): Boolean {
+                    return if (hasData) {
+                        content.viewTreeObserver.removeOnPreDrawListener(this)
+                        val navHostFragment =
+                            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
+                        navHostFragment.navController.navigate(R.id.action_splashFragment_to_currentWeatherFragment)
+                        true
+                    } else {
+                        false
+                    }
                 }
-            }
-        })
+            })
     }
 
     fun updateDataStatus(status: Boolean) {
         hasData = status
     }
-
 
     // only run worker if the network status is connected.
     private val updateWeatherConstraints =

@@ -1,3 +1,19 @@
+/*
+ * Developed by 2022 Duy Mai.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.mmd.cityweather.data
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
@@ -57,7 +73,9 @@ class ForecastWeatherRepositoryImplTest {
             .create(CityWeatherApi::class.java)
 
         forecastWeatherRepository = ForecastWeatherRepositoryImpl(
-            api, apiForecastMapper, cache
+            api,
+            apiForecastMapper,
+            cache
         )
     }
 
@@ -74,7 +92,9 @@ class ForecastWeatherRepositoryImplTest {
 
         // When
         val forecastWeather = forecastWeatherRepository.requestForecastWeather(
-            1, 18.00, 136.00
+            1,
+            18.00,
+            136.00
         )
 
         // Then
@@ -87,7 +107,8 @@ class ForecastWeatherRepositoryImplTest {
         // Given
         val city = Cities(1, "", 120.0, 108.0, "", false)
         val weatherDetail = ForecastWeatherDetail(
-            city.cityId, listOf(
+            city.cityId,
+            listOf(
                 ForecastDetail(
                     10.0,
                     12.0,
@@ -104,7 +125,7 @@ class ForecastWeatherRepositoryImplTest {
                     "",
                     "Sunny",
                     Date(2022, 10, 23),
-                    Date(2022, 10, 23),
+                    Date(2022, 10, 23)
                 )
             )
         )

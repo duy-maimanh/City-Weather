@@ -5,6 +5,7 @@ plugins {
     id 'dagger.hilt.android.plugin'
     id 'jacoco'
     id 'androidx.navigation.safeargs'
+    id 'com.diffplug.spotless'
 }
 
 android {
@@ -159,4 +160,38 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'crea
             "jacoco/testDebugUnitTest.exec",
             "outputs/code-coverage/connected/*coverage.ec"
     ]))
+}
+
+spotless {
+    // optional: limit format enforcement to just the files changed by this feature branch
+//    ratchetFrom 'origin/develop'
+
+    format 'misc', {
+        // define the files to apply `misc` to
+        target '**/*.gradle', '**/*.md', '**/.gitignore'
+
+        // define the steps to apply to those files
+        indentWithSpaces()
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+
+    kotlin {
+        target '**/*.kt'
+        targetExclude '**/build/**/*.kt'
+        ktlint().setUseExperimental(true)
+        trimTrailingWhitespace()
+        indentWithSpaces()
+        endWithNewline()
+        licenseHeaderFile "$rootDir/spotless/copyright.kt"
+    }
+
+    format 'xml', {
+        target '**/*.xml'
+        targetExclude '**/build/**/*.xml'
+        trimTrailingWhitespace()
+        indentWithSpaces()
+        endWithNewline()
+        licenseHeaderFile(rootProject.file("spotless/copyright.xml"), "(<[^!?])")
+    }
 }
