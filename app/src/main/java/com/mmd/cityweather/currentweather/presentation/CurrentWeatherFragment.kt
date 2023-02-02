@@ -90,10 +90,10 @@ class CurrentWeatherFragment : Fragment() {
                         )
                     }
                 }.addOnFailureListener { exception ->
-                    println()
+//                    println()
                 }
             } else {
-                println()
+//                println()
                 // Permission denied
             }
         }
@@ -131,7 +131,8 @@ class CurrentWeatherFragment : Fragment() {
             PrivacyPopupFragment.PRIVACY_KEY,
             this
         ) { _, bundle ->
-            val result = bundle.getBoolean(PrivacyPopupFragment.APPROVE_LOCATION_KEY)
+            val result =
+                bundle.getBoolean(PrivacyPopupFragment.APPROVE_LOCATION_KEY)
             if (result) {
                 locationPermissionRequest.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
             }
