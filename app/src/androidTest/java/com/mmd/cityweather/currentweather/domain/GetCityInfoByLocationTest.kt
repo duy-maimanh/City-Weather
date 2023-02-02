@@ -1,3 +1,19 @@
+/*
+ * Developed by 2022 Duy Mai.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.mmd.cityweather.currentweather.domain
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
@@ -38,7 +54,6 @@ class GetCityInfoByLocationTest {
 
     @Before
     fun setup() {
-
         hiltRule.inject()
 
         fakePreferences = FakePreferences()
@@ -56,7 +71,6 @@ class GetCityInfoByLocationTest {
     fun storeCity_success() {
         val expectedCity = "Đà Nẵng"
         runBlocking {
-
             val city = getCityInfoByLocation.invoke(16.0545, 108.0717)
             assert(city != null)
             Truth.assertThat(city!!.name).isEqualTo(expectedCity)

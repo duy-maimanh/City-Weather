@@ -1,18 +1,31 @@
+/*
+ * Developed by 2022 Duy Mai.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.mmd.cityweather.addcity.presentation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mmd.cityweather.addcity.domain.AddCity
 import com.mmd.cityweather.addcity.domain.GetAllCityFormDatabase
 import com.mmd.cityweather.addcity.domain.GetAllCityFormDisk
 import com.mmd.cityweather.addcity.domain.GetTopCityInfo
-import com.mmd.cityweather.citymanagement.domain.SubscribeCityFromDatabase
 import com.mmd.cityweather.citymanagement.domain.model.UICity
 import com.mmd.cityweather.common.domain.model.CityInfoDetail
 import com.mmd.cityweather.common.presentation.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -86,7 +99,8 @@ class AddCityBottomSheetViewModel @Inject constructor(
                 .filterNot { searched -> searched.cityId in getAllCityFromDatabase().map { database -> database.cityId } }
                 .map {
                     UICity(
-                        it.cityId, it.name
+                        it.cityId,
+                        it.name
                     )
                 }
             _state.update { oldState ->

@@ -1,3 +1,19 @@
+/*
+ * Developed by 2022 Duy Mai.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.mmd.cityweather.currentweather.presentation
 
 import android.os.SystemClock
@@ -9,7 +25,14 @@ import com.mmd.cityweather.common.domain.model.CityInfoDetail
 import com.mmd.cityweather.common.presentation.Event
 import com.mmd.cityweather.common.presentation.models.UICurrentWeather
 import com.mmd.cityweather.common.presentation.models.UIForecastWeather
-import com.mmd.cityweather.currentweather.domain.*
+import com.mmd.cityweather.currentweather.domain.CheckAutoUpdateWeather
+import com.mmd.cityweather.currentweather.domain.ExplainDialogStatus
+import com.mmd.cityweather.currentweather.domain.GetBackgroundForCurrentWeather
+import com.mmd.cityweather.currentweather.domain.GetCityByLocation
+import com.mmd.cityweather.currentweather.domain.GetCurrentWeather
+import com.mmd.cityweather.currentweather.domain.GetSelectedCity
+import com.mmd.cityweather.currentweather.domain.RemoveCity
+import com.mmd.cityweather.currentweather.domain.RequestCurrentWeather
 import com.mmd.cityweather.currentweather.domain.model.CityId
 import com.mmd.cityweather.forecastweatherdetail.domain.ForecastWeather
 import com.mmd.cityweather.privacy.domain.UserApproveLocation
@@ -24,7 +47,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Locale
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -88,9 +112,11 @@ class CurrentWeatherViewModel @Inject constructor(
 
                         // add new city if it already just replace it
                         // save selected into preference for next time open
-                        insertDefaultCity(info.apply {
-                            isAuto = true
-                        })
+                        insertDefaultCity(
+                            info.apply {
+                                isAuto = true
+                            }
+                        )
 
                         // send event to open new fragment
                         _state.update { oldState ->
@@ -155,7 +181,7 @@ class CurrentWeatherViewModel @Inject constructor(
             )
         }.subscribeOn(Schedulers.computation())
             .observeOn(AndroidSchedulers.mainThread()).subscribe({
-                Log.d("current_weather_update","update current")
+                Log.d("current_weather_update", "update current")
                 onNewWeather(it)
             }, {
                 onFailure(it)
@@ -207,7 +233,8 @@ class CurrentWeatherViewModel @Inject constructor(
     }
 
     private fun onLoadingStatus(
-        loadingStatus: Boolean, isFirstInit: Boolean = false
+        loadingStatus: Boolean,
+        isFirstInit: Boolean = false
     ) {
         _state.update { oldState ->
             oldState.copy(loading = loadingStatus, isFirstInit = isFirstInit)
@@ -235,7 +262,8 @@ class CurrentWeatherViewModel @Inject constructor(
     private fun onOpenForecastWeatherDetail() {
         _state.update { oldState ->
             val cityIds = oldState.openForecastDetail + CityId(
-                UUID.randomUUID().mostSignificantBits, selectedCityInfo.cityId
+                UUID.randomUUID().mostSignificantBits,
+                selectedCityInfo.cityId
             )
             oldState.copy(openForecastDetail = cityIds)
         }
@@ -254,11 +282,17 @@ class CurrentWeatherViewModel @Inject constructor(
         }
     }
 
-
     private fun onAutoUpdate(isStart: Boolean) {
         if (this::selectedCityInfo.isInitialized) {
             _state.update { oldState ->
-                oldState.copy(startAutoUpdate = Event(Pair(isStart, selectedCityInfo)))
+                oldState.copy(
+                    startAutoUpdate = Event(
+                        Pair(
+                            isStart,
+                            selectedCityInfo
+                        )
+                    )
+                )
             }
         }
     }
