@@ -66,6 +66,9 @@ class CurrentWeatherViewModel @Inject constructor(
     private val explainDialogStatus: ExplainDialogStatus,
     private val userApproveLocation: UserApproveLocation
 ) : ViewModel() {
+    companion object {
+        private const val NETWORK_ERROR_MESSAGE = "Network error."
+    }
 
     private val _state = MutableStateFlow(CurrentWeatherViewState())
     val state: StateFlow<CurrentWeatherViewState> = _state.asStateFlow()
@@ -131,7 +134,7 @@ class CurrentWeatherViewModel @Inject constructor(
     private fun requestCurrentWeather() {
         onLoadingStatus(true)
         val exception =
-            viewModelScope.createExceptionHandler("Network error", ::onFailure)
+            viewModelScope.createExceptionHandler(NETWORK_ERROR_MESSAGE, ::onFailure)
         viewModelScope.launch(exception) {
             requestCurrentWeather(
                 selectedCityInfo.cityId,
@@ -181,7 +184,6 @@ class CurrentWeatherViewModel @Inject constructor(
             )
         }.subscribeOn(Schedulers.computation())
             .observeOn(AndroidSchedulers.mainThread()).subscribe({
-                Log.d("current_weather_update", "update current")
                 onNewWeather(it)
             }, {
                 onFailure(it)
@@ -278,7 +280,7 @@ class CurrentWeatherViewModel @Inject constructor(
 
     private fun onFailure(throwable: Throwable) {
         _state.update { oldState ->
-            oldState.copy(loading = false, failure = Event(throwable))
+            oldState.copy(loading = false, failure = Event(Throwable(NETWORK_ERROR_MESSAGE)))
         }
     }
 
